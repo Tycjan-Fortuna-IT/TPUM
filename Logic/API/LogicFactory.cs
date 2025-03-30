@@ -5,9 +5,6 @@ namespace Logic.API
 {
     public abstract class LogicFactory
     {
-        //private static IDataContext _dataContext = DataContextFactory.CreateDataContext();
-        //private static IDataRepository _repository = DataRepositoryFactory.CreateDataRepository(_dataContext);
-
         public static IHeroLogic CreateHeroLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
             return new HeroLogic(dataRepository ?? DataRepositoryFactory.CreateDataRepository());

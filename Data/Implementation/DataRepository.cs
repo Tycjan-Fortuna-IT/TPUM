@@ -254,7 +254,7 @@ namespace Data.Implementation
         {
             lock (_ordersLock)
             {
-                _context.Orders[order.Buyer.Id] = order;
+                _context.Orders[order.Id] = order;
             }
         }
 

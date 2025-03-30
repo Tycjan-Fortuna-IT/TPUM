@@ -12,34 +12,48 @@ namespace Logic.Implementation
             this._repository = repository;
         }
 
+        public static IItemDataTransferObject Map(IItem item)
+        {
+            return new ItemDataTransferObject(item.Id, item.Name, item.Price, item.MaintenanceCost);
+        }
+
         public IEnumerable<IItemDataTransferObject> GetAll()
         {
-            throw new NotImplementedException();
+            List<IItemDataTransferObject> all = new List<IItemDataTransferObject>();
+
+            foreach (IItem item in _repository.GetAllItems())
+            {
+                all.Add(Map(item));
+            }
+
+            return all;
         }
 
         public IItemDataTransferObject? Get(Guid id)
         {
-            throw new NotImplementedException();
+            IItem? item = _repository.GetItem(id);
+
+            return item is not null ? Map(item) : null;
         }
 
         public void Add(IItemDataTransferObject item)
         {
-            throw new NotImplementedException();
+            _repository.AddItem(new MappedDataItem(item));
         }
 
         public bool RemoveById(Guid id)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveItemById(id);
         }
 
         public bool Remove(IItemDataTransferObject item)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveItem(new MappedDataItem(item));
         }
 
         public bool Update(Guid id, IItemDataTransferObject item)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateItem(id, new MappedDataItem(item));
         }
     }
 }

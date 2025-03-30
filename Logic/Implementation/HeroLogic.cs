@@ -12,39 +12,53 @@ namespace Logic.Implementation
             this._repository = repository;
         }
 
+        public static IHeroDataTransferObject Map(IHero hero)
+        {
+            return new HeroDataTransferObject(hero.Id, hero.Name, hero.Gold, InventoryLogic.Map(hero.Inventory));
+        }
+
         public IEnumerable<IHeroDataTransferObject> GetAll()
         {
-            throw new NotImplementedException();
+            List<IHeroDataTransferObject> all = new List<IHeroDataTransferObject>();
+
+            foreach (IHero hero in _repository.GetAllHeroes())
+            {
+                all.Add(Map(hero));
+            }
+
+            return all;
         }
 
         public IHeroDataTransferObject? Get(Guid id)
         {
-            throw new NotImplementedException();
+            IHero? hero = _repository.GetHero(id);
+
+            return hero is not null ? Map(hero) : null;
         }
 
-        public void Add(IHeroDataTransferObject item)
+        public void Add(IHeroDataTransferObject hero)
         {
-            throw new NotImplementedException();
+            _repository.AddHero(new MappedDataHero(hero));
         }
 
         public bool RemoveById(Guid id)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveHeroById(id);
         }
 
-        public bool Remove(IHeroDataTransferObject item)
+        public bool Remove(IHeroDataTransferObject hero)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveHero(new MappedDataHero(hero));
         }
 
-        public bool Update(Guid id, IHeroDataTransferObject item)
+        public bool Update(Guid id, IHeroDataTransferObject hero)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateHero(id, new MappedDataHero(hero));
         }
 
         public void PeriodicItemMaintenanceDeduction()
         {
-            throw new NotImplementedException();
+            // TODO
         }
     }
 }

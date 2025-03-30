@@ -12,34 +12,55 @@ namespace Logic.Implementation
             this._repository = repository;
         }
 
+        public static IInventoryDataTransferObject Map(IInventory inventory)
+        {
+            List<IItemDataTransferObject> mappedItems = new List<IItemDataTransferObject>();
+
+            foreach (IItem item in inventory.Items)
+            {
+                mappedItems.Add(ItemLogic.Map(item));
+            }
+
+            return new InventoryDataTransferObject(inventory.Id, inventory.Capacity, mappedItems);
+        }
+
         public IEnumerable<IInventoryDataTransferObject> GetAll()
         {
-            throw new NotImplementedException();
+            List<IInventoryDataTransferObject> all = new List<IInventoryDataTransferObject>();
+
+            foreach (IInventory inventory in _repository.GetAllInventories())
+            {
+                all.Add(Map(inventory));
+            }
+
+            return all;
         }
 
         public IInventoryDataTransferObject? Get(Guid id)
         {
-            throw new NotImplementedException();
+            IInventory? inventory = _repository.GetInventory(id);
+
+            return inventory is not null ? Map(inventory) : null;
         }
 
-        public void Add(IInventoryDataTransferObject item)
+        public void Add(IInventoryDataTransferObject inventory)
         {
-            throw new NotImplementedException();
+            _repository.AddInventory(new MappedDataInventory(inventory));
         }
 
         public bool RemoveById(Guid id)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveInventoryById(id);
         }
 
-        public bool Remove(IInventoryDataTransferObject item)
+        public bool Remove(IInventoryDataTransferObject inventory)
         {
-            throw new NotImplementedException();
+            return _repository.RemoveInventory(new MappedDataInventory(inventory));
         }
 
-        public bool Update(Guid id, IInventoryDataTransferObject item)
+        public bool Update(Guid id, IInventoryDataTransferObject inventory)
         {
-            throw new NotImplementedException();
+            return _repository.UpdateInventory(id, new MappedDataInventory(inventory));
         }
     }
 }
