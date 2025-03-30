@@ -10,7 +10,7 @@ namespace Logic.Tests
         [TestInitialize]
         public void SetUp()
         {
-            _logic = LogicFactory.CreateHeroLogic();
+            _logic = LogicFactory.CreateHeroLogic(new DummyDataRepository());
         }
 
         [TestMethod]

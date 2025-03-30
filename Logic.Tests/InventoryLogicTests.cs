@@ -10,7 +10,7 @@ namespace Logic.Tests
         [TestInitialize]
         public void SetUp()
         {
-            _logic = LogicFactory.CreateInventoryLogic();
+            _logic = LogicFactory.CreateInventoryLogic(new DummyDataRepository());
         }
 
         [TestMethod]

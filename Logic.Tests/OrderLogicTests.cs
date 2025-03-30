@@ -10,7 +10,7 @@ namespace Logic.Tests
         [TestInitialize]
         public void SetUp()
         {
-            _logic = LogicFactory.CreateOrderLogic();
+            _logic = LogicFactory.CreateOrderLogic(new DummyDataRepository());
         }
 
         [TestMethod]
