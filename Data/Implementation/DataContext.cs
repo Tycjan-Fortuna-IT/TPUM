@@ -13,5 +13,10 @@ namespace Data.Implementation
         public Dictionary<Guid, IItem> Items => _items;
         public Dictionary<Guid, IInventory> Inventories => _inventories;
         public Dictionary<Guid, IOrder> Orders => _orders;
+
+        public DataContext()
+        {
+
+        }
     }
 }

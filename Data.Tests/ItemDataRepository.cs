@@ -6,13 +6,13 @@ namespace Data.Tests
     public class ItemDataRepositoryTests
     {
         private IDataContext _context = default!;
-        private IDataRepository<IItem> _repository = default!;
+        private IDataRepository _repository = default!;
 
         [TestInitialize]
         public void SetUp()
         {
             _context = DataContextFactory.CreateDataContext();
-            _repository = DataRepositoryFactory.CreateItemRepository(_context);
+            _repository = DataRepositoryFactory.CreateDataRepository(_context);
         }
 
         [TestMethod]
@@ -20,7 +20,7 @@ namespace Data.Tests
         {
             DummyItem item = new DummyItem("Sword", 100, 5);
 
-            _repository.Add(item);
+            _repository.AddItem(item);
 
             Assert.IsTrue(_context.Items.ContainsKey(item.Id));
             Assert.AreEqual(item.Name, _context.Items[item.Id].Name);
@@ -33,7 +33,7 @@ namespace Data.Tests
             DummyItem item = new DummyItem(itemId, "Sword", 100, 5);
             _context.Items[itemId] = item;
 
-            IItem? result = _repository.Get(itemId);
+            IItem? result = _repository.GetItem(itemId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(item.Name, result.Name);
@@ -44,7 +44,7 @@ namespace Data.Tests
         {
             Guid itemId = Guid.NewGuid();
 
-            IItem? result = _repository.Get(itemId);
+            IItem? result = _repository.GetItem(itemId);
 
             Assert.IsNull(result);
         }
@@ -56,7 +56,7 @@ namespace Data.Tests
             DummyItem item = new DummyItem(itemId, "Sword", 100, 5);
             _context.Items[itemId] = item;
 
-            bool result = _repository.Remove(item);
+            bool result = _repository.RemoveItem(item);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Items.ContainsKey(itemId));
@@ -67,7 +67,7 @@ namespace Data.Tests
         {
             DummyItem item = new DummyItem(Guid.NewGuid(), "Sword", 100, 5);
 
-            bool result = _repository.Remove(item);
+            bool result = _repository.RemoveItem(item);
 
             Assert.IsFalse(result);
         }
@@ -79,7 +79,7 @@ namespace Data.Tests
             DummyItem item = new DummyItem(itemId, "Sword", 100, 5);
             _context.Items[itemId] = item;
 
-            bool result = _repository.RemoveById(itemId);
+            bool result = _repository.RemoveItemById(itemId);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Items.ContainsKey(itemId));
@@ -90,7 +90,7 @@ namespace Data.Tests
         {
             Guid itemId = Guid.NewGuid();
 
-            bool result = _repository.RemoveById(itemId);
+            bool result = _repository.RemoveItemById(itemId);
 
             Assert.IsFalse(result);
         }
@@ -104,7 +104,7 @@ namespace Data.Tests
 
             DummyItem updatedItem = new DummyItem(itemId, "UpdatedSword", 150, 10);
 
-            bool result = _repository.Update(itemId, updatedItem);
+            bool result = _repository.UpdateItem(itemId, updatedItem);
 
             Assert.IsTrue(result);
             Assert.AreEqual(updatedItem.Name, _context.Items[itemId].Name);
@@ -116,7 +116,7 @@ namespace Data.Tests
             Guid itemId = Guid.NewGuid();
             DummyItem updatedItem = new DummyItem(itemId, "UpdatedSword", 150, 10);
 
-            bool result = _repository.Update(itemId, updatedItem);
+            bool result = _repository.UpdateItem(itemId, updatedItem);
 
             Assert.IsFalse(result);
         }

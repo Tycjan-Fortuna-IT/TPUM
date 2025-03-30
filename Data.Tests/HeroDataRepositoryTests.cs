@@ -6,13 +6,13 @@ namespace Data.Tests
     public class HeroDataRepositoryTests
     {
         private IDataContext _context = default!;
-        private IDataRepository<IHero> _repository = default!;
+        private IDataRepository _repository = default!;
 
         [TestInitialize]
         public void SetUp()
         {
             _context = DataContextFactory.CreateDataContext();
-            _repository = DataRepositoryFactory.CreateHeroRepository(_context);
+            _repository = DataRepositoryFactory.CreateDataRepository(_context);
         }
 
         [TestMethod]
@@ -21,7 +21,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(10);
             DummyHero hero = new DummyHero("Hero1", 1000, inventory);
 
-            _repository.Add(hero);
+            _repository.AddHero(hero);
 
             Assert.IsTrue(_context.Heroes.ContainsKey(hero.Id));
             Assert.AreEqual(hero.Name, _context.Heroes[hero.Id].Name);
@@ -36,7 +36,7 @@ namespace Data.Tests
 
             _context.Heroes[heroId] = hero;
 
-            IHero? result = _repository.Get(heroId);
+            IHero? result = _repository.GetHero(heroId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(hero.Name, result.Name);
@@ -47,7 +47,7 @@ namespace Data.Tests
         {
             Guid heroId = Guid.NewGuid();
 
-            IHero? result = _repository.Get(heroId);
+            IHero? result = _repository.GetHero(heroId);
 
             Assert.IsNull(result);
         }
@@ -60,7 +60,7 @@ namespace Data.Tests
             DummyHero hero = new DummyHero(heroId, "Hero1", 1000, inventory);
             _context.Heroes[heroId] = hero;
 
-            bool result = _repository.Remove(hero);
+            bool result = _repository.RemoveHero(hero);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Heroes.ContainsKey(heroId));
@@ -72,7 +72,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(10);
             DummyHero hero = new DummyHero(Guid.NewGuid(), "Hero1", 1000, inventory);
 
-            bool result = _repository.Remove(hero);
+            bool result = _repository.RemoveHero(hero);
 
             Assert.IsFalse(result);
         }
@@ -85,7 +85,7 @@ namespace Data.Tests
             DummyHero hero = new DummyHero(heroId, "Hero1", 1000, inventory);
             _context.Heroes[heroId] = hero;
 
-            bool result = _repository.RemoveById(heroId);
+            bool result = _repository.RemoveHeroById(heroId);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Heroes.ContainsKey(heroId));
@@ -96,7 +96,7 @@ namespace Data.Tests
         {
             Guid heroId = Guid.NewGuid();
 
-            bool result = _repository.RemoveById(heroId);
+            bool result = _repository.RemoveHeroById(heroId);
 
             Assert.IsFalse(result);
         }
@@ -111,7 +111,7 @@ namespace Data.Tests
 
             DummyHero updatedHero = new DummyHero(heroId, "UpdatedHero", 1500, inventory);
 
-            bool result = _repository.Update(heroId, updatedHero);
+            bool result = _repository.UpdateHero(heroId, updatedHero);
 
             Assert.IsTrue(result);
             Assert.AreEqual(updatedHero.Name, _context.Heroes[heroId].Name);
@@ -124,7 +124,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(10);
             DummyHero updatedHero = new DummyHero(heroId, "UpdatedHero", 1500, inventory);
 
-            bool result = _repository.Update(heroId, updatedHero);
+            bool result = _repository.UpdateHero(heroId, updatedHero);
 
             Assert.IsFalse(result);
         }

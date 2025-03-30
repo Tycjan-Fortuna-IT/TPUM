@@ -6,13 +6,13 @@ namespace Data.Tests
     public class InventoryDataRepositoryTests
     {
         private IDataContext _context = default!;
-        private IDataRepository<IInventory> _repository = default!;
+        private IDataRepository _repository = default!;
 
         [TestInitialize]
         public void SetUp()
         {
             _context = DataContextFactory.CreateDataContext();
-            _repository = DataRepositoryFactory.CreateInventoryRepository(_context);
+            _repository = DataRepositoryFactory.CreateDataRepository(_context);
         }
 
         [TestMethod]
@@ -20,7 +20,7 @@ namespace Data.Tests
         {
             DummyInventory inventory = new DummyInventory(10);
 
-            _repository.Add(inventory);
+            _repository.AddInventory(inventory);
 
             Assert.IsTrue(_context.Inventories.ContainsKey(inventory.Id));
             Assert.AreEqual(inventory.Capacity, _context.Inventories[inventory.Id].Capacity);
@@ -33,7 +33,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(inventoryId, 10);
             _context.Inventories[inventoryId] = inventory;
 
-            IInventory? result = _repository.Get(inventoryId);
+            IInventory? result = _repository.GetInventory(inventoryId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(inventory.Capacity, result.Capacity);
@@ -44,7 +44,7 @@ namespace Data.Tests
         {
             Guid inventoryId = Guid.NewGuid();
 
-            IInventory? result = _repository.Get(inventoryId);
+            IInventory? result = _repository.GetInventory(inventoryId);
 
             Assert.IsNull(result);
         }
@@ -56,7 +56,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(inventoryId, 10);
             _context.Inventories[inventoryId] = inventory;
 
-            bool result = _repository.Remove(inventory);
+            bool result = _repository.RemoveInventory(inventory);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Inventories.ContainsKey(inventoryId));
@@ -67,7 +67,7 @@ namespace Data.Tests
         {
             DummyInventory inventory = new DummyInventory(Guid.NewGuid(), 10);
 
-            bool result = _repository.Remove(inventory);
+            bool result = _repository.RemoveInventory(inventory);
 
             Assert.IsFalse(result);
         }
@@ -79,7 +79,7 @@ namespace Data.Tests
             DummyInventory inventory = new DummyInventory(inventoryId, 10);
             _context.Inventories[inventoryId] = inventory;
 
-            bool result = _repository.RemoveById(inventoryId);
+            bool result = _repository.RemoveInventoryById(inventoryId);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Inventories.ContainsKey(inventoryId));
@@ -90,7 +90,7 @@ namespace Data.Tests
         {
             Guid inventoryId = Guid.NewGuid();
 
-            bool result = _repository.RemoveById(inventoryId);
+            bool result = _repository.RemoveInventoryById(inventoryId);
 
             Assert.IsFalse(result);
         }
@@ -104,7 +104,7 @@ namespace Data.Tests
 
             DummyInventory updatedInventory = new DummyInventory(inventoryId, 15);
 
-            bool result = _repository.Update(inventoryId, updatedInventory);
+            bool result = _repository.UpdateInventory(inventoryId, updatedInventory);
 
             Assert.IsTrue(result);
             Assert.AreEqual(updatedInventory.Capacity, _context.Inventories[inventoryId].Capacity);
@@ -116,7 +116,7 @@ namespace Data.Tests
             Guid inventoryId = Guid.NewGuid();
             DummyInventory updatedInventory = new DummyInventory(inventoryId, 15);
 
-            bool result = _repository.Update(inventoryId, updatedInventory);
+            bool result = _repository.UpdateInventory(inventoryId, updatedInventory);
 
             Assert.IsFalse(result);
         }

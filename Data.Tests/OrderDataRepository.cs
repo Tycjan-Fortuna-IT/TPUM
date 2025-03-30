@@ -6,13 +6,13 @@ namespace Data.Tests
     public class OrderDataRepositoryTests
     {
         private IDataContext _context = default!;
-        private IDataRepository<IOrder> _repository = default!;
+        private IDataRepository _repository = default!;
 
         [TestInitialize]
         public void SetUp()
         {
             _context = DataContextFactory.CreateDataContext();
-            _repository = DataRepositoryFactory.CreateOrderRepository(_context);
+            _repository = DataRepositoryFactory.CreateDataRepository(_context);
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace Data.Tests
             List<IItem> itemsToBuy = new List<IItem> { new DummyItem("Sword", 100, 5) };
             DummyOrder order = new DummyOrder(hero, itemsToBuy);
 
-            _repository.Add(order);
+            _repository.AddOrder(order);
 
             Assert.IsTrue(_context.Orders.ContainsKey(order.Id));
             Assert.AreEqual(hero.Name, _context.Orders[order.Id].Buyer.Name);
@@ -37,7 +37,7 @@ namespace Data.Tests
             DummyOrder order = new DummyOrder(orderId, hero, itemsToBuy);
             _context.Orders[orderId] = order;
 
-            IOrder? result = _repository.Get(orderId);
+            IOrder? result = _repository.GetOrder(orderId);
 
             Assert.IsNotNull(result);
             Assert.AreEqual(orderId, result.Id);
@@ -48,7 +48,7 @@ namespace Data.Tests
         {
             Guid orderId = Guid.NewGuid();
 
-            IOrder? result = _repository.Get(orderId);
+            IOrder? result = _repository.GetOrder(orderId);
 
             Assert.IsNull(result);
         }
@@ -62,7 +62,7 @@ namespace Data.Tests
             DummyOrder order = new DummyOrder(orderId, hero, itemsToBuy);
             _context.Orders[orderId] = order;
 
-            bool result = _repository.Remove(order);
+            bool result = _repository.RemoveOrder(order);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Orders.ContainsKey(orderId));
@@ -75,7 +75,7 @@ namespace Data.Tests
             List<IItem> itemsToBuy = new List<IItem> { new DummyItem("Sword", 100, 5) };
             DummyOrder order = new DummyOrder(Guid.NewGuid(), hero, itemsToBuy);
 
-            bool result = _repository.Remove(order);
+            bool result = _repository.RemoveOrder(order);
 
             Assert.IsFalse(result);
         }
@@ -89,7 +89,7 @@ namespace Data.Tests
             DummyOrder order = new DummyOrder(orderId, hero, itemsToBuy);
             _context.Orders[orderId] = order;
 
-            bool result = _repository.RemoveById(orderId);
+            bool result = _repository.RemoveOrderById(orderId);
 
             Assert.IsTrue(result);
             Assert.IsFalse(_context.Orders.ContainsKey(orderId));
@@ -100,7 +100,7 @@ namespace Data.Tests
         {
             Guid orderId = Guid.NewGuid();
 
-            bool result = _repository.RemoveById(orderId);
+            bool result = _repository.RemoveOrderById(orderId);
 
             Assert.IsFalse(result);
         }
@@ -117,7 +117,7 @@ namespace Data.Tests
             List<IItem> updatedItems = new List<IItem> { new DummyItem("Axe", 150, 8) };
             DummyOrder updatedOrder = new DummyOrder(orderId, hero, updatedItems);
 
-            bool result = _repository.Update(orderId, updatedOrder);
+            bool result = _repository.UpdateOrder(orderId, updatedOrder);
 
             Assert.IsTrue(result);
             Assert.AreEqual(updatedItems.Count, _context.Orders[orderId].ItemsToBuy.Count());
@@ -131,7 +131,7 @@ namespace Data.Tests
             List<IItem> updatedItems = new List<IItem> { new DummyItem("Axe", 150, 8) };
             DummyOrder updatedOrder = new DummyOrder(orderId, hero, updatedItems);
 
-            bool result = _repository.Update(orderId, updatedOrder);
+            bool result = _repository.UpdateOrder(orderId, updatedOrder);
 
             Assert.IsFalse(result);
         }
