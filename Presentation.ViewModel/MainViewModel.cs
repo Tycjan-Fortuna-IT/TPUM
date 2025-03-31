@@ -12,57 +12,58 @@ namespace Presentation.ViewModel
     public class MainViewModel : ViewModelBase
     {
         private readonly ModelAbstractAPI _modelAPI;
-        public HeroSelectionViewModel HeroSelectionVM { get; }
-        public InventoryViewModel InventoryVM { get; }
-        public ShopViewModel ShopVM { get; }
-        public OrderViewModel OrderVM { get; }
+
+        // Child ViewModels
+        public HeroSelectionViewModel HeroSelectionVM { get; private set; }
+        public InventoryViewModel InventoryVM { get; private set; }
+        public ShopViewModel ShopVM { get; private set; }
+        public OrderViewModel OrderVM { get; private set; }
 
         public MainViewModel(ModelAbstractAPI modelAPI)
         {
             _modelAPI = modelAPI ?? throw new ArgumentNullException(nameof(modelAPI));
 
-            // Initialize ViewModels in the correct order to handle dependencies
-            OrderVM = new OrderViewModel(modelAPI);
-            InventoryVM = new InventoryViewModel(modelAPI);
-            HeroSelectionVM = new HeroSelectionViewModel(modelAPI, InventoryVM, OrderVM);
-            ShopVM = new ShopViewModel(modelAPI, OrderVM);
+            // Initialize child ViewModels
+            OrderVM = new OrderViewModel(_modelAPI);
+            HeroSelectionVM = new HeroSelectionViewModel(_modelAPI);
+            InventoryVM = new InventoryViewModel(_modelAPI);
+            ShopVM = new ShopViewModel(_modelAPI, OrderVM);
 
-            // Commands for main window operations
-            RefreshDataCommand = new RelayCommand(ExecuteRefreshData);
-            ProcessOrdersCommand = new RelayCommand(ExecuteProcessOrders);
-            PerformMaintenanceCommand = new RelayCommand(ExecutePerformMaintenance);
-            RestockItemsCommand = new RelayCommand(ExecuteRestockItems);
+            // Set up coordination between ViewModels
+            SetupViewModelCoordination();
         }
 
-        public ICommand RefreshDataCommand { get; }
-        public ICommand ProcessOrdersCommand { get; }
-        public ICommand PerformMaintenanceCommand { get; }
-        public ICommand RestockItemsCommand { get; }
-
-        private void ExecuteRefreshData(object? parameter)
+        private void SetupViewModelCoordination()
         {
-            HeroSelectionVM.RefreshHeroes();
-            InventoryVM.RefreshInventory();
-            ShopVM.RefreshShopItems();
-            OrderVM.LoadHeroOrders(OrderVM.CurrentHeroId);
+            // When hero selection changes, update other ViewModels
+            // This could be done via event handling or by subscribing to PropertyChanged events
+
+            // For example, we could implement a method in HeroSelectionViewModel:
+            // public event Action<IHeroDataTransferObject> HeroChanged;
+
+            // And then subscribe to it here:
+            // HeroSelectionVM.HeroChanged += hero => {
+            //     InventoryVM.HeroId = hero.Id;
+            //     ShopVM.CurrentHero = hero;
+            //     OrderVM.Buyer = hero;
+            // };
+
+            // Alternatively, we could just check for changes in a timer or command execution
         }
 
-        private void ExecuteProcessOrders(object? parameter)
+        // Method to refresh all ViewModels
+        public void RefreshAll()
         {
-            OrderVM.ProcessOrders();
-            ExecuteRefreshData(null);
-        }
+            HeroSelectionVM.Refresh();
 
-        private void ExecutePerformMaintenance(object? parameter)
-        {
-            _modelAPI.PerformHeroMaintenance();
-            ExecuteRefreshData(null);
-        }
+            if (HeroSelectionVM.SelectedHero != null)
+            {
+                InventoryVM.HeroId = HeroSelectionVM.SelectedHero.Id;
+                InventoryVM.Refresh();
 
-        private void ExecuteRestockItems(object? parameter)
-        {
-            _modelAPI.RestockItems();
-            ShopVM.RefreshShopItems();
+                ShopVM.CurrentHero = HeroSelectionVM.SelectedHero;
+                ShopVM.Refresh();
+            }
         }
     }
 }

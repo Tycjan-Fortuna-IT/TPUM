@@ -10,8 +10,6 @@ namespace Presentation.Model.Implementation
 {
     public class DTOMapper : IDTOMapper
     {
-        // ZASYPIAM JUŻ AAAAAAAAAAA dobra jutro to się zrobi trzeba lepsze mapowanie wymyślić albo pozmieniać
-        // struktury tych klas sam już nie wiem
         public IHeroModel MapToHeroModel(IHeroDataTransferObject dto)
         {
             return new HeroModel
@@ -30,7 +28,7 @@ namespace Presentation.Model.Implementation
                 Id = model.Id,
                 Name = model.Name,
                 Gold = model.Gold,
-                Inventory = model.Inventory
+                Inventory = (InventoryDTO)(model.Inventory)
             };  
         }
 
@@ -82,7 +80,7 @@ namespace Presentation.Model.Implementation
             {
                 Id = dto.Id,
                 Buyer = MapToHeroModel(dto.Buyer),
-                ItemsToBuy = dto.ItemsToBuy // mapp all?
+                ItemsToBuy = dto.ItemsToBuy?.Select(MapToItemModel).ToList() ?? new List<IItemModel>()
             };
         }
 
@@ -91,20 +89,18 @@ namespace Presentation.Model.Implementation
             return new OrderDTO
             {
                 Id = model.Id,
-                Buyer = MapToHeroDTO(model.Buyer),
-                ItemIds = model.ItemsToBuy?.Select(item => item.Id).ToList() ?? new List<Guid>()
+                Buyer = (HeroDTO)(model.Buyer),
+                ItemsToBuy = model.ItemsToBuy?.Select(MapToItemDTO).ToList() ?? new List<IItemDataTransferObject>()
             };
         }
-
-        // Placeholder concrete implementations for DTOs
         private class HeroDTO : IHeroDataTransferObject
         {
             public Guid Id { get; set; }
             public string Name { get; set; }
             public float Gold { get; set; }
-            public List<IItemDataTransferObject> Inventory { get; set; } = new List<IItemDataTransferObject>();
+            public InventoryDTO Inventory { get; set; }
 
-            IInventoryDataTransferObject IHeroDataTransferObject.Inventory => throw new NotImplementedException();
+            IInventoryDataTransferObject IHeroDataTransferObject.Inventory => Inventory;
         }
 
         private class InventoryDTO : IInventoryDataTransferObject

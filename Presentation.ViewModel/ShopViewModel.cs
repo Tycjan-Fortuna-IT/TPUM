@@ -1,12 +1,6 @@
 ﻿using Presentation.Model.API;
 using Presentation.ViewModel.MVVMLight;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Presentation.ViewModel
 {
@@ -14,142 +8,139 @@ namespace Presentation.ViewModel
     {
         private readonly ModelAbstractAPI _modelAPI;
         private readonly OrderViewModel _orderViewModel;
-        private ObservableCollection<ShopItemViewModel> _shopItems;
-        private ShopItemViewModel? _selectedShopItem;
-        private int _purchaseQuantity;
+
+        private ObservableCollection<IItemModel> _availableItems;
+        private IItemModel _selectedShopItem;
+        private string _shopStatus;
+        private IHeroModel _currentHero;
 
         public ShopViewModel(ModelAbstractAPI modelAPI, OrderViewModel orderViewModel)
         {
             _modelAPI = modelAPI ?? throw new ArgumentNullException(nameof(modelAPI));
             _orderViewModel = orderViewModel ?? throw new ArgumentNullException(nameof(orderViewModel));
-            _shopItems = new ObservableCollection<ShopItemViewModel>();
-            _purchaseQuantity = 1;
 
-            // Commands
-            PurchaseCommand = new RelayCommand(ExecutePurchase, CanExecutePurchase);
+            // Initialize collections
+            AvailableItems = new ObservableCollection<IItemModel>();
 
-            LoadShopItems();
+            // Load available items
+            LoadAvailableItems();
         }
 
-        public ObservableCollection<ShopItemViewModel> ShopItems
+        // Available items collection property
+        public ObservableCollection<IItemModel> AvailableItems
         {
-            get => _shopItems;
-            set => SetProperty(ref _shopItems, value);
+            get => _availableItems;
+            private set => SetProperty(ref _availableItems, value);
         }
 
-        public ShopItemViewModel? SelectedShopItem
+        // Selected shop item property
+        public IItemModel SelectedShopItem
         {
             get => _selectedShopItem;
+            set => SetProperty(ref _selectedShopItem, value);
+        }
+
+        // Shop status property
+        public string ShopStatus
+        {
+            get => _shopStatus;
+            private set => SetProperty(ref _shopStatus, value);
+        }
+
+        // Current hero property
+        public IHeroModel CurrentHero
+        {
+            get => _currentHero;
             set
             {
-                if (SetProperty(ref _selectedShopItem, value))
+                if (SetProperty(ref _currentHero, value))
                 {
-                    // Reset quantity when new item is selected
-                    PurchaseQuantity = 1;
-                    // Refresh command state
-                    ((RelayCommand)PurchaseCommand).RaiseCanExecuteChanged();
+                    // Update the order buyer
+                    _orderViewModel.Buyer = _currentHero;
+                    UpdateShopStatus();
                 }
             }
         }
 
-        public int PurchaseQuantity
+        // Method to load all available items from the model API
+        public void LoadAvailableItems()
         {
-            get => _purchaseQuantity;
-            set
+            AvailableItems.Clear();
+
+            var itemModels = _modelAPI.GetAllItems();
+            if (itemModels != null)
             {
-                if (value < 1) value = 1;
-                if (SetProperty(ref _purchaseQuantity, value))
+                foreach (var itemModel in itemModels)
                 {
-                    // Refresh command state
-                    ((RelayCommand)PurchaseCommand).RaiseCanExecuteChanged();
+                    var itemDto = itemModel as IItemModel;
+                    if (itemDto != null)
+                    {
+                        AvailableItems.Add(itemDto);
+                    }
                 }
             }
+
+            UpdateShopStatus();
         }
 
-        public ICommand PurchaseCommand { get; }
-
-        private void LoadShopItems()
+        // Method to add the selected item to the order
+        public void AddSelectedItemToOrder()
         {
-            var items = _modelAPI.GetAllItems();
-            var shopItems = new ObservableCollection<ShopItemViewModel>();
-
-            foreach (var item in items)
-            {
-                shopItems.Add(new ShopItemViewModel
-                {
-                    ItemId = item.Id,
-                    Name = item.Name,
-                    Description = item.Description,
-                    Price = item.Value,
-                    Stock = item.Stock
-                });
-            }
-
-            ShopItems = shopItems;
-        }
-
-        private bool CanExecutePurchase(object? parameter)
-        {
-            if (SelectedShopItem == null || _orderViewModel.CurrentHeroId == Guid.Empty)
-                return false;
-
-            return SelectedShopItem.Stock >= PurchaseQuantity;
-        }
-
-        private void ExecutePurchase(object? parameter)
-        {
-            if (SelectedShopItem == null || _orderViewModel.CurrentHeroId == Guid.Empty)
+            if (SelectedShopItem == null || CurrentHero == null)
                 return;
 
-            // Create a new order
-            _orderViewModel.CreateOrder(SelectedShopItem.ItemId, PurchaseQuantity);
+            // Check if the hero has enough gold
+            if (CurrentHero.Gold < SelectedShopItem.Price)
+            {
+                ShopStatus = $"Not enough gold! Item costs {SelectedShopItem.Price}, but you only have {CurrentHero.Gold}.";
+                return;
+            }
 
-            // Refresh the shop items
-            LoadShopItems();
+            // Add the item to the order
+            _orderViewModel.AddItemToOrder(SelectedShopItem);
+            ShopStatus = $"Added {SelectedShopItem.Name} to your order.";
         }
 
-        public void RefreshShopItems()
+        // Method to update the shop status text
+        private void UpdateShopStatus()
         {
-            LoadShopItems();
-        }
-    }
+            if (CurrentHero == null)
+            {
+                ShopStatus = "No hero selected";
+                return;
+            }
 
-    public class ShopItemViewModel : ViewModelBase
-    {
-        private Guid _itemId;
-        private string _name;
-        private string _description;
-        private decimal _price;
-        private int _stock;
-
-        public Guid ItemId
-        {
-            get => _itemId;
-            set => SetProperty(ref _itemId, value);
+            ShopStatus = $"Welcome to the shop! You have {CurrentHero.Gold} gold available.";
         }
 
-        public string Name
+        // Method to handle hero selection from another view model
+        public void HeroSelected(IHeroModel hero)
         {
-            get => _name;
-            set => SetProperty(ref _name, value);
+            CurrentHero = hero;
         }
 
-        public string Description
+        // Method to refresh the shop (e.g., after restocking)
+        public void RestockShop()
         {
-            get => _description;
-            set => SetProperty(ref _description, value);
+            _modelAPI.RestockItems();
+            LoadAvailableItems();
+            ShopStatus = "Shop has been restocked!";
         }
 
-        public decimal Price
+        // Method to refresh the view model
+        public void Refresh()
         {
-            get => _price;
-            set => SetProperty(ref _price, value);
-        }
+            LoadAvailableItems();
 
-        public int Stock
-        {
-            get => _stock;
-            set => SetProperty(ref _stock, value);
+            if (CurrentHero != null)
+            {
+                // Refresh hero data
+                var hero = _modelAPI.GetHero(CurrentHero.Id);
+                if (hero != null)
+                {
+                    CurrentHero = hero as IHeroModel;
+                }
+            }
         }
     }
 }

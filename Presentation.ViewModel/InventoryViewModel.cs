@@ -1,131 +1,185 @@
 ﻿using Presentation.Model.API;
 using Presentation.ViewModel.MVVMLight;
-
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Presentation.ViewModel
 {
     public class InventoryViewModel : ViewModelBase
     {
         private readonly ModelAbstractAPI _modelAPI;
-        private ObservableCollection<InventoryItemViewModel> _inventoryItems;
-        private InventoryItemViewModel? _selectedInventoryItem;
-        private Guid _currentHeroId;
+
+        private Guid _heroId;
+        private IInventoryModel _inventory;
+        private ObservableCollection<IItemModel> _items;
+        private int _capacity;
+        private int _itemCount;
+        private IItemModel _selectedItem;
+        private string _inventoryStatus;
 
         public InventoryViewModel(ModelAbstractAPI modelAPI)
         {
             _modelAPI = modelAPI ?? throw new ArgumentNullException(nameof(modelAPI));
-            _inventoryItems = new ObservableCollection<InventoryItemViewModel>();
-            _currentHeroId = Guid.Empty;
+
+            // Initialize collections
+            Items = new ObservableCollection<IItemModel>();
         }
 
-        public ObservableCollection<InventoryItemViewModel> InventoryItems
+        // Hero ID property
+        public Guid HeroId
         {
-            get => _inventoryItems;
-            set => SetProperty(ref _inventoryItems, value);
-        }
-
-        public InventoryItemViewModel? SelectedInventoryItem
-        {
-            get => _selectedInventoryItem;
-            set => SetProperty(ref _selectedInventoryItem, value);
-        }
-
-        public Guid CurrentHeroId
-        {
-            get => _currentHeroId;
+            get => _heroId;
             set
             {
-                if (SetProperty(ref _currentHeroId, value))
+                if (SetProperty(ref _heroId, value) && _heroId != Guid.Empty)
                 {
-                    LoadHeroInventory(_currentHeroId);
+                    LoadInventory();
                 }
             }
         }
 
-        public void LoadHeroInventory(Guid heroId)
+        // Inventory property
+        public IInventoryModel Inventory
         {
-            _currentHeroId = heroId;
-            var inventories = _modelAPI.GetAllInventories().Where(i => i.HeroId == heroId);
+            get => _inventory;
+            private set => SetProperty(ref _inventory, value);
+        }
 
-            var items = new ObservableCollection<InventoryItemViewModel>();
-            foreach (var inventory in inventories)
+        // Items collection property
+        public ObservableCollection<IItemModel> Items
+        {
+            get => _items;
+            private set => SetProperty(ref _items, value);
+        }
+
+        // Capacity property
+        public int Capacity
+        {
+            get => _capacity;
+            private set => SetProperty(ref _capacity, value);
+        }
+
+        // Item count property
+        public int ItemCount
+        {
+            get => _itemCount;
+            private set => SetProperty(ref _itemCount, value);
+        }
+
+        // Selected item property
+        public IItemModel SelectedItem
+        {
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
+        }
+
+        // Inventory status property (e.g. "5/10 items")
+        public string InventoryStatus
+        {
+            get => _inventoryStatus;
+            private set => SetProperty(ref _inventoryStatus, value);
+        }
+
+        // Method to load inventory for the specified hero
+        public void LoadInventory()
+        {
+            if (_heroId == Guid.Empty)
+                return;
+
+            var hero = _modelAPI.GetHero(_heroId);
+            if (hero == null)
+                return;
+
+            var heroDto = hero as IHeroModel;
+            if (heroDto?.Inventory == null)
+                return;
+
+            Inventory = heroDto.Inventory;
+            Capacity = Inventory.Capacity;
+
+            // Load inventory items
+            Items.Clear();
+            foreach (var item in Inventory.Items)
             {
-                var item = _modelAPI.GetItem(inventory.ItemId);
-                if (item != null)
-                {
-                    items.Add(new InventoryItemViewModel
-                    {
-                        InventoryId = inventory.Id,
-                        ItemId = item.Id,
-                        Name = item.Name,
-                        Description = item.Description,
-                        Value = item.Value,
-                        Quantity = inventory.Quantity
-                    });
-                }
+                Items.Add(item as IItemModel);
             }
 
-            InventoryItems = items;
+            ItemCount = Items.Count;
+            UpdateInventoryStatus();
         }
 
-        public void RefreshInventory()
+        // Update the inventory status text
+        private void UpdateInventoryStatus()
         {
-            if (_currentHeroId != Guid.Empty)
+            InventoryStatus = $"{ItemCount}/{Capacity} items";
+        }
+
+        // Method to add an item to the inventory
+        public bool AddItem(IItemModel item)
+        {
+            if (ItemCount >= Capacity)
+                return false;
+
+            if (item == null)
+                return false;
+
+            // Get the hero and inventory
+            var hero = _modelAPI.GetHero(_heroId) as IHeroModel;
+            if (hero == null || hero.Inventory == null)
+                return false;
+
+            // Add the item to the inventory
+            // Note: This assumes the ModelAPI will handle the actual update to the data store
+            var inventoryModel = _modelAPI.GetInventory(hero.Inventory.Id);
+            if (inventoryModel == null)
+                return false;
+
+            // Add the item to the collection
+            Items.Add(item);
+            ItemCount = Items.Count;
+            UpdateInventoryStatus();
+
+            return true;
+        }
+
+        // Method to remove the selected item from the inventory
+        public bool RemoveSelectedItem()
+        {
+            if (SelectedItem == null)
+                return false;
+
+            // Get the hero and inventory
+            var hero = _modelAPI.GetHero(_heroId) as IHeroModel;
+            if (hero == null || hero.Inventory == null)
+                return false;
+
+            // Remove the item from the inventory
+            // Note: This assumes the ModelAPI will handle the actual update to the data store
+            var inventoryModel = _modelAPI.GetInventory(hero.Inventory.Id);
+            if (inventoryModel == null)
+                return false;
+
+            // Remove the item from the collection
+            Items.Remove(SelectedItem);
+            SelectedItem = null;
+            ItemCount = Items.Count;
+            UpdateInventoryStatus();
+
+            return true;
+        }
+
+        // Method to check if the inventory has space for more items
+        public bool HasSpace()
+        {
+            return ItemCount < Capacity;
+        }
+
+        // Method to refresh the view model
+        public void Refresh()
+        {
+            if (_heroId != Guid.Empty)
             {
-                LoadHeroInventory(_currentHeroId);
+                LoadInventory();
             }
-        }
-    }
-
-    public class InventoryItemViewModel : ViewModelBase
-    {
-        private Guid _inventoryId;
-        private Guid _itemId;
-        private string _name;
-        private string _description;
-        private decimal _value;
-        private int _quantity;
-
-        public Guid InventoryId
-        {
-            get => _inventoryId;
-            set => SetProperty(ref _inventoryId, value);
-        }
-
-        public Guid ItemId
-        {
-            get => _itemId;
-            set => SetProperty(ref _itemId, value);
-        }
-
-        public string Name
-        {
-            get => _name;
-            set => SetProperty(ref _name, value);
-        }
-
-        public string Description
-        {
-            get => _description;
-            set => SetProperty(ref _description, value);
-        }
-
-        public decimal Value
-        {
-            get => _value;
-            set => SetProperty(ref _value, value);
-        }
-
-        public int Quantity
-        {
-            get => _quantity;
-            set => SetProperty(ref _quantity, value);
         }
     }
 }

@@ -40,10 +40,10 @@ namespace Presentation.Model.API
         public abstract void RestockItems();
 
         public static ModelAPIImplementation CreateApi(
-        IHeroLogic heroLogic = null,
-        IInventoryLogic inventoryLogic = null,
-        IItemLogic itemLogic = null,
-        IOrderLogic orderLogic = null)
+        IHeroLogic? heroLogic = null,
+        IInventoryLogic? inventoryLogic = null,
+        IItemLogic? itemLogic = null,
+        IOrderLogic? orderLogic = null)
         {
             return new ModelAPIImplementation(
                 heroLogic ?? LogicFactory.CreateHeroLogic(),
