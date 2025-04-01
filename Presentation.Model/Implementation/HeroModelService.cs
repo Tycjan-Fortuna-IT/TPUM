@@ -3,14 +3,14 @@ using Logic.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Presentation.Model.Implementation.Transient;
+using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
     internal class HeroModelService : IHeroModelService
     {
         private readonly IHeroLogic _heroLogic;
-        private readonly IInventoryLogic _inventoryLogic; // Might need this to fetch inventory for Add/Update
+        private readonly IInventoryLogic _inventoryLogic;
 
         public HeroModelService(IHeroLogic heroLogic, IInventoryLogic inventoryLogic)
         {
@@ -32,14 +32,7 @@ namespace Presentation.Model.Implementation
 
         public void AddHero(Guid id, string name, float gold, Guid inventoryId)
         {
-            // We need an IInventoryDataTransferObject. Fetch it using the Logic Layer.
             var inventoryDto = _inventoryLogic.Get(inventoryId);
-            if (inventoryDto == null)
-            {
-                // Or create a default one if applicable, depends on logic rules
-                throw new InvalidOperationException($"Inventory with ID {inventoryId} not found.");
-            }
-
             var transientDto = new TransientHeroDTO(id, name, gold, inventoryDto);
             _heroLogic.Add(transientDto);
         }
@@ -53,10 +46,6 @@ namespace Presentation.Model.Implementation
         public bool UpdateHero(Guid id, string name, float gold, Guid inventoryId)
         {
             var inventoryDto = _inventoryLogic.Get(inventoryId);
-            if (inventoryDto == null)
-            {
-                throw new InvalidOperationException($"Inventory with ID {inventoryId} not found for update.");
-            }
             var transientDto = new TransientHeroDTO(id, name, gold, inventoryDto);
             return _heroLogic.Update(id, transientDto);
         }

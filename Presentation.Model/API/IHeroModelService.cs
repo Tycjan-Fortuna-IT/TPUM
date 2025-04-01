@@ -9,12 +9,6 @@ namespace Presentation.Model.API
         void AddHero(Guid id, string name, float gold, Guid inventoryId);
         bool RemoveHero(Guid id);
         bool UpdateHero(Guid id, string name, float gold, Guid inventoryId);
-
-        // requires mapping DTOs within implementation
-        // void AddHero(IHeroModel hero);
-        // bool RemoveHero(IHeroModel hero);
-        // bool UpdateHero(Guid id, IHeroModel hero);
-
         void TriggerPeriodicItemMaintenanceDeduction();
     }
 }

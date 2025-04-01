@@ -1,8 +1,8 @@
 ﻿using Logic.API;
 
-namespace Presentation.Model.Implementation.Transient // Internal namespace if desired
+namespace Presentation.Model.Implementation.Mapper
 {
-    // --- Item DTO ---
+    // Item DTO
     internal class TransientItemDTO : IItemDataTransferObject
     {
         public Guid Id { get; }
@@ -17,12 +17,11 @@ namespace Presentation.Model.Implementation.Transient // Internal namespace if d
             Price = price;
             MaintenanceCost = maintenanceCost;
         }
-        // Constructor for mapping from IItemModel if needed
         public TransientItemDTO(API.IItemModel model)
             : this(model.Id, model.Name, model.Price, model.MaintenanceCost) { }
     }
 
-    // --- Inventory DTO ---
+    // Inventory DTO
     internal class TransientInventoryDTO : IInventoryDataTransferObject
     {
         public Guid Id { get; }
@@ -35,12 +34,11 @@ namespace Presentation.Model.Implementation.Transient // Internal namespace if d
             Capacity = capacity;
             Items = items?.ToList() ?? new List<IItemDataTransferObject>();
         }
-        // Constructor for mapping from IInventoryModel if needed
         public TransientInventoryDTO(API.IInventoryModel model)
            : this(model.Id, model.Capacity, model.Items.Select(i => new TransientItemDTO(i))) { }
     }
 
-    // --- Hero DTO ---
+    // Hero DTO
     internal class TransientHeroDTO : IHeroDataTransferObject
     {
         public Guid Id { get; }
@@ -55,12 +53,11 @@ namespace Presentation.Model.Implementation.Transient // Internal namespace if d
             Gold = gold;
             Inventory = inventory;
         }
-        // Constructor for mapping from IHeroModel if needed
         public TransientHeroDTO(API.IHeroModel model)
              : this(model.Id, model.Name, model.Gold, new TransientInventoryDTO(model.Inventory)) { }
     }
 
-    // --- Order DTO ---
+    // Order DTO
     internal class TransientOrderDTO : IOrderDataTransferObject
     {
         public Guid Id { get; }
@@ -73,9 +70,6 @@ namespace Presentation.Model.Implementation.Transient // Internal namespace if d
             Buyer = buyer;
             ItemsToBuy = itemsToBuy?.ToList() ?? new List<IItemDataTransferObject>();
         }
-        // Constructor for mapping from IOrderModel if needed
-        // This needs access to logic or cached models to resolve Buyer/Items from IDs
-        // For simplicity, AddOrder in service might construct this differently
         public TransientOrderDTO(API.IOrderModel model)
             : this(model.Id, new TransientHeroDTO(model.Buyer), model.ItemsToBuy.Select(i => new TransientItemDTO(i))) { }
     }

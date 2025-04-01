@@ -1,4 +1,5 @@
 ﻿using Presentation.Model.API;
+using Logic.API;
 using System;
 
 namespace Presentation.Model.Implementation
@@ -10,8 +11,8 @@ namespace Presentation.Model.Implementation
         public int Price { get; }
         public int MaintenanceCost { get; }
 
-        // Constructor taking Logic DTO for mapping
-        public ItemModel(Logic.API.IItemDataTransferObject dto)
+        // DTO
+        public ItemModel(IItemDataTransferObject dto)
         {
             Id = dto.Id;
             Name = dto.Name;
@@ -19,7 +20,7 @@ namespace Presentation.Model.Implementation
             MaintenanceCost = dto.MaintenanceCost;
         }
 
-        // Constructor for direct creation if needed
+        // direct creation
         public ItemModel(Guid id, string name, int price, int maintenanceCost)
         {
             Id = id;

@@ -1,28 +1,22 @@
-﻿// --- Presentation/ViewModel/HeroMaintenanceService.cs ---
-using System;
-using System.Threading;
-using System.Threading.Tasks;
-using Presentation.Model.API; // For IHeroModelService, IHeroModel
+﻿using Presentation.Model.API;
 
 namespace Presentation.ViewModel
 {
-    // Interface for the service (optional but good practice)
     public interface IHeroMaintenanceService : IDisposable
     {
         void Start();
         void Stop();
     }
 
-    // Implementation
     public class HeroMaintenanceService : IHeroMaintenanceService
     {
         private readonly IHeroModelService _heroService;
-        private readonly Func<IHeroModel?> _getSelectedHeroFunc; // Function to get current hero from MainViewModel
-        private readonly Func<Task> _refreshHeroDataAction; // Action to tell MainViewModel to refresh
-        private readonly SynchronizationContext? _syncContext; // UI context
+        private readonly Func<IHeroModel?> _getSelectedHeroFunc; // get current hero from MainViewModel
+        private readonly Func<Task> _refreshHeroDataAction;
+        private readonly SynchronizationContext? _syncContext;
         private Timer? _maintenanceTimer;
         private readonly TimeSpan _interval;
-        private bool _isProcessing = false; // Prevent re-entrancy
+        private bool _isProcessing = false;
 
         public HeroMaintenanceService(
             IHeroModelService heroService,
@@ -34,22 +28,21 @@ namespace Presentation.ViewModel
             _heroService = heroService ?? throw new ArgumentNullException(nameof(heroService));
             _getSelectedHeroFunc = getSelectedHeroFunc ?? throw new ArgumentNullException(nameof(getSelectedHeroFunc));
             _refreshHeroDataAction = refreshHeroDataAction ?? throw new ArgumentNullException(nameof(refreshHeroDataAction));
-            _syncContext = uiSyncContext; // Can be null if not run on UI thread, handle gracefully
-            _interval = interval ?? TimeSpan.FromSeconds(60); // Default to 60 seconds
+            _syncContext = uiSyncContext; // Can be null!!!
+            _interval = interval ?? TimeSpan.FromSeconds(60); // Item meintenance interval
         }
 
         public void Start()
         {
-            // Start the timer only if it's not already running
+            // Start the timer for mentenance
             if (_maintenanceTimer == null)
             {
                 Console.WriteLine($"Starting maintenance timer with interval {_interval.TotalSeconds}s.");
-                // Use System.Threading.Timer for background execution
                 _maintenanceTimer = new Timer(
                     MaintenanceTick,
-                    null, // No state object needed
-                    _interval, // Initial delay same as interval
-                    _interval  // Interval
+                    null, // No state object necessary
+                    _interval, // delay
+                    _interval  // interval
                 );
             }
         }
@@ -63,25 +56,24 @@ namespace Presentation.ViewModel
 
         private async void MaintenanceTick(object? state)
         {
-            if (_isProcessing) return; // Don't run if already processing
+            if (_isProcessing) return;
 
             _isProcessing = true;
             IHeroModel? currentHero = null;
 
             try
             {
-                // --- Step 1: Get the current hero safely on the UI thread ---
                 if (_syncContext != null)
                 {
                     await Task.Factory.StartNew(() =>
                     {
-                        _syncContext.Send(_ => // Send waits for completion
+                        _syncContext.Send(_ =>
                         {
-                            currentHero = _getSelectedHeroFunc();
+                            currentHero = _getSelectedHeroFunc(); // later on the client "selected hero" will be specific
                         }, null);
-                    }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default); // Run Send on a pool thread
+                    }, CancellationToken.None, TaskCreationOptions.None, TaskScheduler.Default);
                 }
-                else // Fallback if no sync context (e.g., testing) - assumes direct call is safe
+                else
                 {
                     currentHero = _getSelectedHeroFunc();
                 }
@@ -89,45 +81,39 @@ namespace Presentation.ViewModel
 
                 if (currentHero == null)
                 {
-                    // Console.WriteLine("MaintenanceTick: No hero selected.");
-                    return; // No hero selected, do nothing this tick
+                    Console.WriteLine("[MaintenanceTask] No hero selected.");
+                    return;
                 }
 
-                Console.WriteLine($"MaintenanceTick: Processing maintenance for Hero: {currentHero.Name} ({currentHero.Id})");
+                Console.WriteLine($"[MaintenanceTask] Maintenance for Hero: {currentHero.Name} ({currentHero.Id})");
 
-                // --- Step 2: Trigger the logic layer processing (can run off UI thread) ---
                 await Task.Run(() => _heroService.TriggerPeriodicItemMaintenanceDeduction());
-                Console.WriteLine($"MaintenanceTick: Logic layer processing triggered for Hero: {currentHero.Name}");
+                Console.WriteLine($"[MaintenanceTask] Meintenance task sent for processing | Hero: {currentHero.Name}");
 
 
-                // --- Step 3: Request the MainViewModel to refresh data on UI thread ---
+                // refresh data on UI thread
                 if (_syncContext != null)
                 {
                     _syncContext.Post(async _ =>
                     {
                         try
                         {
-                            // Check again if the same hero is still selected before refreshing
+                            // if the same hero is still selected
                             var heroAfterCheck = _getSelectedHeroFunc();
                             if (heroAfterCheck != null && heroAfterCheck.Id == currentHero.Id)
                             {
-                                Console.WriteLine($"MaintenanceTick: Requesting UI refresh for Hero: {currentHero.Name}");
                                 await _refreshHeroDataAction(); // Ask ViewModel to refresh itself
-                                Console.WriteLine($"MaintenanceTick: UI refresh completed for Hero: {currentHero.Name}");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"MaintenanceTick: Hero changed during processing, skipping refresh.");
+                                Console.WriteLine($"[MaintenanceTask] UI refresh for Hero: {currentHero.Name}");
                             }
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"Error during UI refresh callback: {ex.Message}");
+                            Console.WriteLine($"[MaintenanceTask] Error during UI refresh: {ex.Message}");
                         }
 
                     }, null);
                 }
-                else // Fallback if no context
+                else // Fallback
                 {
                     await _refreshHeroDataAction();
                 }
@@ -135,18 +121,17 @@ namespace Presentation.ViewModel
             }
             catch (Exception ex)
             {
-                // Log the error, but don't crash the timer
-                Console.WriteLine($"Error during maintenance tick: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
+                Console.WriteLine($"[MaintenanceTask] Error during maintenance process: {ex.Message}{Environment.NewLine}{ex.StackTrace}");
             }
             finally
             {
-                _isProcessing = false; // Allow next tick
+                _isProcessing = false;
             }
         }
 
         public void Dispose()
         {
-            Stop(); // Ensure timer is stopped and disposed
+            Stop();
             GC.SuppressFinalize(this);
         }
     }

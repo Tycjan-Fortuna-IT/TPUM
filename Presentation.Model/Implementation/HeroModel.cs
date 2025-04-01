@@ -1,4 +1,5 @@
 ﻿using Presentation.Model.API;
+using Logic.API;
 
 namespace Presentation.Model.Implementation
 {
@@ -9,13 +10,12 @@ namespace Presentation.Model.Implementation
         public float Gold { get; }
         public IInventoryModel Inventory { get; }
 
-        // Constructor taking Logic DTO for mapping
-        public HeroModel(Logic.API.IHeroDataTransferObject dto)
+        // DTO
+        public HeroModel(IHeroDataTransferObject dto)
         {
             Id = dto.Id;
             Name = dto.Name;
             Gold = dto.Gold;
-            //Inventory DTO -> InventoryModel
             Inventory = new InventoryModel(dto.Inventory);
         }
 

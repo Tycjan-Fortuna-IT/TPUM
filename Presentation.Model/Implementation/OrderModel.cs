@@ -1,7 +1,8 @@
 ﻿using Presentation.Model.API;
+using Logic.API;
 using System;
 using System.Collections.Generic;
-using System.Linq; // Needed for Select
+using System.Linq;
 
 namespace Presentation.Model.Implementation
 {
@@ -11,17 +12,15 @@ namespace Presentation.Model.Implementation
         public IHeroModel Buyer { get; }
         public IEnumerable<IItemModel> ItemsToBuy { get; }
 
-        // Constructor taking Logic DTO for mapping
-        public OrderModel(Logic.API.IOrderDataTransferObject dto)
+        // DTO
+        public OrderModel(IOrderDataTransferObject dto)
         {
             Id = dto.Id;
-            // Map the nested DTOs
             Buyer = new HeroModel(dto.Buyer);
-            //ItemsToBuy = new List<IItemModel>();
-            ItemsToBuy = dto.ItemsToBuy?.Select(itemDto => new ItemModel(itemDto)).ToList() ?? new List<IItemModel>();
+            ItemsToBuy = dto.ItemsToBuy?.Select(itemDto => new ItemModel(itemDto)).ToList() ?? Enumerable.Empty<IItemModel>();
         }
 
-        // Constructor for direct creation if needed
+        // direct creation
         public OrderModel(Guid id, IHeroModel buyer, IEnumerable<IItemModel> itemsToBuy)
         {
             Id = id;

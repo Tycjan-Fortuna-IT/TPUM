@@ -1,9 +1,9 @@
 ﻿using Presentation.Model.API;
-using Logic.API; // Uses Logic API
+using Presentation.Model.Implementation.Mapper;
+using Logic.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Presentation.Model.Implementation.Transient; // For helper DTOs
 
 namespace Presentation.Model.Implementation
 {
@@ -31,9 +31,9 @@ namespace Presentation.Model.Implementation
 
         public void AddItem(Guid id, string name, int price, int maintenanceCost)
         {
-            // Create a transient DTO to pass to the logic layer
-            var transientDto = new TransientItemDTO(id, name, price, maintenanceCost);
-            _itemLogic.Add(transientDto);
+            // Create Model DTO to pass to the logic layer
+            var modelDto = new TransientItemDTO(id, name, price, maintenanceCost);
+            _itemLogic.Add(modelDto);
         }
 
         public bool RemoveItem(Guid id)
@@ -43,9 +43,9 @@ namespace Presentation.Model.Implementation
 
         public bool UpdateItem(Guid id, string name, int price, int maintenanceCost)
         {
-            // Create a transient DTO to pass to the logic layer
-            var transientDto = new TransientItemDTO(id, name, price, maintenanceCost);
-            return _itemLogic.Update(id, transientDto);
+            // Create a Model DTO to pass to the logic layer
+            var modelDto = new TransientItemDTO(id, name, price, maintenanceCost);
+            return _itemLogic.Update(id, modelDto);
         }
     }
 }

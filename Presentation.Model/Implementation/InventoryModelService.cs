@@ -2,7 +2,6 @@
 using Logic.API;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Presentation.Model.Implementation
 {
@@ -26,7 +25,5 @@ namespace Presentation.Model.Implementation
             var dto = _inventoryLogic.Get(id);
             return dto == null ? null : new InventoryModel(dto); // Map DTO to Model
         }
-
-        // Add/Remove/Update implementations if needed, potentially using TransientInventoryDTO
     }
 }

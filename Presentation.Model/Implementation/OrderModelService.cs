@@ -1,17 +1,14 @@
 ﻿using Presentation.Model.API;
 using Logic.API;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Presentation.Model.Implementation.Transient;
+using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
     internal class OrderModelService : IOrderModelService
     {
         private readonly IOrderLogic _orderLogic;
-        private readonly IHeroLogic _heroLogic;   // Needed to get Buyer DTO for Add
-        private readonly IItemLogic _itemLogic;   // Needed to get Item DTOs for Add
+        private readonly IHeroLogic _heroLogic;
+        private readonly IItemLogic _itemLogic;
 
         public OrderModelService(IOrderLogic orderLogic, IHeroLogic heroLogic, IItemLogic itemLogic)
         {
@@ -34,13 +31,7 @@ namespace Presentation.Model.Implementation
 
         public void AddOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds)
         {
-            // Fetch the required DTOs from the Logic layer
             var buyerDto = _heroLogic.Get(buyerId);
-            if (buyerDto == null)
-            {
-                throw new InvalidOperationException($"Buyer Hero with ID {buyerId} not found.");
-            }
-
             var itemDtos = new List<IItemDataTransferObject>();
             foreach (var itemId in itemIds)
             {

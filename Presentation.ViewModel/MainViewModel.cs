@@ -1,49 +1,51 @@
-﻿// --- Presentation/ViewModel/MainViewModel.cs ---
-using Presentation.Model.API;
-using System;
+﻿using Presentation.Model.API;
 using System.Collections.ObjectModel;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Input; // For ICommand
+using System.Windows.Input;
 
 namespace Presentation.ViewModel
 {
-    // MainViewModel now implements IDisposable to clean up the maintenance service
     public class MainViewModel : ViewModelBase, IDisposable
     {
-        // --- Services ---
+        #region Fields
+
+        // Services
         private readonly IHeroModelService _heroService;
         private readonly IItemModelService _itemService;
         private readonly IOrderModelService _orderService;
-        private readonly IHeroMaintenanceService _maintenanceService; // Use the new service
-        private readonly SynchronizationContext? _syncContext; // Captured UI context
+        private readonly IHeroMaintenanceService _maintenanceService;
+        private readonly SynchronizationContext? _syncContext;
 
-        // --- Data Collections ---
+        private IHeroModel? _selectedHero;
+        private IItemModel? _selectedShopItem;
+        private float _selectedHeroGold;
+
+        #endregion
+
+        #region Properties
+
         public ObservableCollection<IHeroModel> Heroes { get; } = new ObservableCollection<IHeroModel>();
         public ObservableCollection<IItemModel> SelectedHeroInventory { get; } = new ObservableCollection<IItemModel>();
         public ObservableCollection<IItemModel> ShopItems { get; } = new ObservableCollection<IItemModel>();
         public ObservableCollection<IOrderModel> Orders { get; } = new ObservableCollection<IOrderModel>();
 
-        // --- Selected Items ---
-        private IHeroModel? _selectedHero;
+        // Selected Hero
         public IHeroModel? SelectedHero
         {
             get => _selectedHero;
             set
             {
-                // Use SetField for INotifyPropertyChanged
                 if (SetField(ref _selectedHero, value))
                 {
-                    // Update dependent UI properties when hero changes
                     UpdateSelectedHeroUIData();
-                    // Notify commands that depend on SelectedHero
-                    BuyItemCommand.RaiseCanExecuteChanged();
+                    BuyItemCommand.RaiseCanExecuteChanged(); // Update connected commands
                 }
             }
         }
 
-        private IItemModel? _selectedShopItem;
+        // Selected Item
         public IItemModel? SelectedShopItem
         {
             get => _selectedShopItem;
@@ -51,67 +53,78 @@ namespace Presentation.ViewModel
             {
                 if (SetField(ref _selectedShopItem, value))
                 {
-                    // Notify commands that depend on SelectedShopItem
-                    BuyItemCommand.RaiseCanExecuteChanged();
+                    BuyItemCommand.RaiseCanExecuteChanged(); // Update connected commands
                 }
             }
         }
 
-        // --- Display Properties ---
-        private float _selectedHeroGold;
         public float SelectedHeroGold
         {
             get => _selectedHeroGold;
-            // Private set ensures it's only updated internally via RefreshSelectedHeroDataAsync
             private set => SetField(ref _selectedHeroGold, value);
         }
 
-        // --- Commands ---
+        // Commands
         public RelayCommand BuyItemCommand { get; }
 
-        // --- Constructor ---
-        public MainViewModel() // Parameterless for View Locator / Design Time
+        #endregion
+
+        #region Constructors
+
+        public MainViewModel()
+            // create default services from the factory and inject them to constructor below
+            : this(ModelFactoryAbstract.CreateFactory().CreateHeroModelService(),
+                   ModelFactoryAbstract.CreateFactory().CreateItemModelService(),
+                   ModelFactoryAbstract.CreateFactory().CreateOrderModelService())
         {
-            // **Important:** This assumes the ViewModel is created on the UI thread!
+        }
+
+        public MainViewModel(
+            IHeroModelService heroService,
+            IItemModelService itemService,
+            IOrderModelService orderService)
+        {
+
             _syncContext = SynchronizationContext.Current;
             if (_syncContext == null)
             {
-                Console.WriteLine("Warning: MainViewModel created without a SynchronizationContext. UI updates from background threads might fail.");
-                // In some scenarios (like unit tests), you might provide a dummy context
-                // or design the code to handle null context gracefully.
+                Debug.WriteLine("Warning: MainViewModel created outside of WPF project");
             }
 
-            // Use the static factory from Model.API for simplicity here:
-            var modelFactory = ModelFactory.CreateFactory();
-            _heroService = modelFactory.CreateHeroModelService();
-            _itemService = modelFactory.CreateItemModelService();
-            _orderService = modelFactory.CreateOrderModelService();
+            _heroService = heroService ?? throw new ArgumentNullException(nameof(heroService));
+            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
+            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
 
-            // Create the maintenance service, passing delegates/funcs to interact with this VM
+            // Create the maintenance service
             _maintenanceService = new HeroMaintenanceService(
                 _heroService,
-                GetSelectedHeroForMaintenance, // Method to get current hero
-                RefreshSelectedHeroDataAsync, // Method to trigger refresh
-                _syncContext); // Pass the captured UI context
+                GetSelectedHeroForMaintenance,
+                RefreshSelectedHeroDataAsync,
+                _syncContext);
 
+            // Initialize Commands
             BuyItemCommand = new RelayCommand(ExecuteBuyItem, CanExecuteBuyItem);
 
-            // Load initial data asynchronously
             _ = LoadInitialDataAsync();
+
             // Start the background maintenance task
             _maintenanceService.Start();
+
+            Debug.WriteLine("MainViewModel creation complete.");
         }
 
-        // Constructor for Dependency Injection (Preferred) - Omitted for brevity,
-        // but would inject services and create HeroMaintenanceService similarly.
+        #endregion
 
-        // --- Data Loading and Refreshing ---
+        #region Data Loading
 
         private async Task LoadInitialDataAsync()
         {
-            await LoadHeroesAsync();
-            await LoadShopItemsAsync();
-            await RefreshOrdersAsync();
+            await Task.WhenAll(
+                LoadHeroesAsync(),
+                LoadShopItemsAsync(),
+                RefreshOrdersAsync()
+            );
+            Debug.WriteLine("Initial data loading complete.");
         }
 
         private async Task LoadHeroesAsync()
@@ -119,7 +132,7 @@ namespace Presentation.ViewModel
             try
             {
                 var heroes = await Task.Run(() => _heroService.GetAllHeroes().ToList());
-                UpdateObservableCollection(Heroes, heroes); // Use helper to update on UI thread
+                UpdateObservableCollection(Heroes, heroes);
             }
             catch (Exception ex) { LogError("loading heroes", ex); }
         }
@@ -134,7 +147,7 @@ namespace Presentation.ViewModel
             catch (Exception ex) { LogError("loading shop items", ex); }
         }
 
-        public async Task RefreshOrdersAsync() // Made public if external refresh needed
+        public async Task RefreshOrdersAsync()
         {
             try
             {
@@ -144,89 +157,79 @@ namespace Presentation.ViewModel
             catch (Exception ex) { LogError("refreshing orders", ex); }
         }
 
-        // Central method to update ObservableCollections safely on the UI thread
-        private void UpdateObservableCollection<T>(ObservableCollection<T> collection, List<T> newData)
+        public void UpdateObservableCollection<T>(ObservableCollection<T> collection, List<T> newData)
         {
-            Action updateAction = () => {
+            Action updateAction = () =>
+            {
                 collection.Clear();
                 foreach (var item in newData)
                 {
                     collection.Add(item);
                 }
-                // --- REMOVED THE PROBLEMATIC 'if' BLOCK ---
-                // If you *did* want to auto-select the first hero, you'd handle it
-                // specifically after calling UpdateObservableCollection for Heroes:
-                // e.g., after LoadHeroesAsync completes:
-                // UpdateObservableCollection(Heroes, heroes);
-                // if (Heroes.Count > 0 && SelectedHero == null) SelectedHero = Heroes[0];
             };
 
-            // Post the update to the UI thread if context exists, otherwise run directly
             if (_syncContext != null)
             {
                 _syncContext.Post(_ => updateAction(), null);
             }
             else
             {
-                // Run directly if no context (e.g., tests or non-UI thread construction)
                 updateAction();
             }
         }
 
 
-        // Refreshes the currently selected hero's Gold and Inventory
-        // This method MUST be called on the UI thread (or marshalled to it)
-        // because it modifies UI-bound properties.
+        // Refreshes Gold and Inventory
         public async Task RefreshSelectedHeroDataAsync()
         {
-            IHeroModel? currentHero = _selectedHero; // Capture locally
+            IHeroModel? currentHero = _selectedHero;
             if (currentHero == null) return;
 
-            Console.WriteLine($"RefreshSelectedHeroDataAsync: Refreshing data for {currentHero.Name}");
             try
             {
-                // Fetch potentially updated data from the service (can run in background)
                 var updatedHeroData = await Task.Run(() => _heroService.GetHero(currentHero.Id));
 
-                // Update UI properties on the UI thread
-                Action updateAction = () => {
-                    // Double-check the hero hasn't changed *again* since the Task.Run started
+                // Prepare the UI update
+                Action updateAction = () =>
+                {
                     if (_selectedHero == null || _selectedHero.Id != currentHero.Id)
                     {
-                        Console.WriteLine($"RefreshSelectedHeroDataAsync: Hero changed before UI update for {currentHero.Name}. Aborting UI update.");
-                        return; // Hero changed, don't update stale UI
+                        return;
                     }
 
                     if (updatedHeroData != null)
                     {
-                        SelectedHeroGold = updatedHeroData.Gold; // Update bound property
+                        SelectedHeroGold = updatedHeroData.Gold;
                         SelectedHeroInventory.Clear();
                         foreach (var item in updatedHeroData.Inventory.Items)
                         {
                             SelectedHeroInventory.Add(item);
                         }
-                        Console.WriteLine($"RefreshSelectedHeroDataAsync: UI updated for {currentHero.Name}. New Gold: {SelectedHeroGold}");
+                        Debug.WriteLine($"UI updated for {currentHero.Name}. New Gold: {SelectedHeroGold}");
                     }
                     else
                     {
-                        // Hero might have been deleted in the meantime
-                        Console.WriteLine($"RefreshSelectedHeroDataAsync: Hero {currentHero.Name} not found after refresh. Clearing selection.");
-                        SelectedHero = null; // Clear selection, which will clear UI via setter
+                        SelectedHero = null;
                     }
                 };
 
-                // Post the update action back to the UI thread
-                _syncContext?.Post(_ => updateAction(), null);
-
+                // Post the update to the UI
+                if (_syncContext != null)
+                {
+                    _syncContext.Post(_ => updateAction(), null);
+                }
+                else
+                {
+                    updateAction(); // Execute directly if no context
+                }
             }
             catch (Exception ex)
             {
-                LogError($"refreshing data for hero {currentHero.Name}", ex);
+                LogError($"While refreshing data for hero {currentHero.Name}", ex);
             }
         }
 
-        // Updates UI display based on the _selectedHero field. Called by SelectedHero setter.
-        // Runs directly on UI thread as it's called from property setter.
+
         private void UpdateSelectedHeroUIData()
         {
             if (_selectedHero != null)
@@ -245,88 +248,81 @@ namespace Presentation.ViewModel
             }
         }
 
-        // --- Command Implementations ---
+        #endregion
+
+        #region Command Implementations
 
         private bool CanExecuteBuyItem(object? parameter)
         {
+            // Can only buy if a hero and item are selected
             return SelectedHero != null && SelectedShopItem != null;
         }
 
         private async void ExecuteBuyItem(object? parameter)
         {
-            // Capture state needed for the operation
             IHeroModel? buyer = SelectedHero;
             IItemModel? itemToBuy = SelectedShopItem;
+            if (buyer == null || itemToBuy == null)
+            {
+                Debug.WriteLine($"Cannot buy item, buyer or item is null.");
+                return;
+            }
 
-            if (buyer == null || itemToBuy == null) return; // Should be handled by CanExecute
-
-            Console.WriteLine($"ExecuteBuyItem: Attempting purchase for Hero {buyer.Name}, Item {itemToBuy.Name}");
+            Debug.WriteLine($"Attempting purchase for {buyer.Name}, Item {itemToBuy.Name}");
             try
             {
                 Guid orderId = Guid.NewGuid();
                 List<Guid> itemIds = new List<Guid> { itemToBuy.Id };
 
-                // Perform the service call in the background
                 await Task.Run(() => _orderService.AddOrder(orderId, buyer.Id, itemIds));
-                Console.WriteLine($"ExecuteBuyItem: Order {orderId} added via service.");
-
-                // Simulate immediate processing (replace with actual server logic later)
                 await Task.Run(() => _orderService.TriggerPeriodicOrderProcessing());
-                Console.WriteLine($"ExecuteBuyItem: Order processing triggered.");
+                Debug.WriteLine($"Order processing on.");
 
-
-                // Refresh relevant UI data after the operation completes
-                // Post the refresh calls back to the UI thread context
-                _syncContext?.Post(async _ => {
+                Func<Task> refreshAction = async () => {
                     await RefreshOrdersAsync();
-                    // Check if the buyer is still the selected hero before refreshing them
                     if (SelectedHero != null && SelectedHero.Id == buyer.Id)
                     {
                         await RefreshSelectedHeroDataAsync();
                     }
-                    Console.WriteLine($"ExecuteBuyItem: UI refreshed after purchase.");
-                }, null);
+                };
 
-            }
-            catch (InvalidOperationException ioex)
-            {
-                LogError($"creating order for Hero {buyer.Name}, Item {itemToBuy.Name}", ioex);
-                // TODO: Show user feedback (e.g., "Item not found", "Not enough gold?")
+                if (_syncContext != null)
+                {
+                    _syncContext.Post(async _ => await refreshAction(), null);
+                }
+                else
+                {
+                    // Execute directly if no context
+                    await refreshAction();
+                }
             }
             catch (Exception ex)
             {
-                LogError($"buying item for Hero {buyer.Name}", ex);
-                // TODO: Show generic error feedback
+                LogError($"while buying item for Hero {buyer.Name}", ex);
+                // maybe a UI callback should be made to say to the user that purchase failed
             }
         }
 
-        // --- Methods for Maintenance Service ---
+        #endregion
 
-        // Provides the currently selected hero to the maintenance service.
-        // This method will be called *by* the maintenance service *on the UI thread* via syncContext.Send.
-        private IHeroModel? GetSelectedHeroForMaintenance()
-        {
-            // Directly return the current value - this runs on UI thread context
-            // Console.WriteLine($"GetSelectedHeroForMaintenance: Providing hero: {(_selectedHero?.Name ?? "None")}");
-            return _selectedHero;
-        }
 
-        // --- Utility ---
+        #region Utility & Cleanup
+
+        private IHeroModel? GetSelectedHeroForMaintenance() => _selectedHero;
+
         private void LogError(string action, Exception ex)
         {
-            // Implement proper logging later
-            Console.WriteLine($"Error during {action}: {ex.Message}");
-            // Console.WriteLine(ex.StackTrace); // Optional: include stack trace for debugging
+            Debug.WriteLine($"Error during {action}: {ex.Message}{Environment.NewLine}StackTrace: {ex.StackTrace}");
         }
 
-
-        // --- Cleanup ---
         public void Dispose()
         {
-            Console.WriteLine("Disposing MainViewModel...");
-            // Stop and dispose the maintenance service and its timer
+            Debug.WriteLine("Disposing MainViewModel...");
             _maintenanceService?.Dispose();
             GC.SuppressFinalize(this);
+            Debug.WriteLine("MainViewModel disposed.");
         }
+
+        #endregion
     }
 }

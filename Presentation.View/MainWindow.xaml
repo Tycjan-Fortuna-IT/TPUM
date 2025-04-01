@@ -4,9 +4,112 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Presentation.View"
+        xmlns:vm="clr-namespace:Presentation.ViewModel;assembly=Presentation.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Fantasy Shop" Height="600" Width="800"
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel, IsDesignTimeCreatable=True}"
+        Closed="Window_Closed">
 
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Hero Selection / Gold -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Hero Selection and Gold -->
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="3" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Select Hero:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+            <ComboBox ItemsSource="{Binding Heroes}"
+                      SelectedItem="{Binding SelectedHero, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      MinWidth="150" VerticalAlignment="Center" Margin="0,0,20,0"/>
+
+            <TextBlock Text="Gold:" VerticalAlignment="Center" Margin="0,0,5,0" FontWeight="Bold"/>
+            <TextBlock Text="{Binding SelectedHeroGold, StringFormat={}{0:F2}}"
+                       VerticalAlignment="Center" MinWidth="50"/>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="329*"/>
+                <!-- Shop -->
+                <ColumnDefinition Width="Auto" MinWidth="7"/>
+                <!-- Splitter -->
+                <ColumnDefinition Width="444*"/>
+                <!-- Inventory & Orders -->
+            </Grid.ColumnDefinitions>
+
+            <!-- Shop -->
+            <GroupBox Grid.Column="0" Header="Shop Stock" Padding="5" Margin="0,0,5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <!-- Item List -->
+                        <RowDefinition Height="Auto"/>
+                        <!-- Buy Button -->
+                    </Grid.RowDefinitions>
+
+                    <ListView Grid.Row="0" ItemsSource="{Binding ShopItems}"
+                              SelectedItem="{Binding SelectedShopItem, Mode=TwoWay}"
+                              HorizontalContentAlignment="Stretch" Margin="0,0,0,5">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Item Name" Width="150"
+                                                DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Price" Width="80"
+                                                DisplayMemberBinding="{Binding Price}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+
+                    <Button Grid.Row="1" Content="Buy Selected Item"
+                            Command="{Binding BuyItemCommand}"
+                            HorizontalAlignment="Right" Padding="10,5"/>
+                </Grid>
+            </GroupBox>
+
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" Width="6" HorizontalAlignment="Center" Background="LightGray"/>
+
+            <Grid Grid.Column="2" Margin="5,0,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="283*"/>
+                    <!-- Inventory -->
+                    <RowDefinition Height="249*"/>
+                    <!-- Orders -->
+                </Grid.RowDefinitions>
+
+                <!-- Inventory -->
+                <GroupBox Grid.Row="0" Header="Selected Hero's Inventory" Padding="5" Margin="0,0,0,10">
+                    <ListView ItemsSource="{Binding SelectedHeroInventory}" HorizontalContentAlignment="Stretch">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Item Name" Width="150"
+                                                DisplayMemberBinding="{Binding Name}"/>
+                                <GridViewColumn Header="Maint. Cost" Width="100"
+                                                DisplayMemberBinding="{Binding MaintenanceCost}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+
+                <!-- Orders -->
+                <GroupBox Header="Current Orders" Padding="5" Margin="0,10,3,37" Grid.Row="1">
+                    <ListView ItemsSource="{Binding Orders}" HorizontalContentAlignment="Stretch">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="Order ID" Width="250"
+                                                DisplayMemberBinding="{Binding Id}"/>
+                                <GridViewColumn Header="Buyer" Width="150"
+                                                DisplayMemberBinding="{Binding Buyer.Name}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </GroupBox>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
+
+    
