@@ -1,12 +1,10 @@
-﻿using Presentation.Model.Implementation;
-
-namespace Presentation.Model.API
+﻿namespace Presentation.Model.API
 {
     public interface IItemModel
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public int Price { get; set; }
-        public int MaintenanceCost { get; set; }
+        Guid Id { get; }
+        string Name { get; }
+        int Price { get; }
+        int MaintenanceCost { get; }
     }
 }
