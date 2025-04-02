@@ -10,6 +10,5 @@ namespace Presentation.Model.API
         bool RemoveOrder(Guid id);
 
         void TriggerPeriodicOrderProcessing(); 
-        void TriggerRestockItems();
     }
 }

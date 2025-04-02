@@ -56,10 +56,5 @@ namespace Presentation.Model.Implementation
         {
             _orderLogic.PeriodicOrderProcessing();
         }
-
-        public void TriggerRestockItems()
-        {
-            _orderLogic.RestockItems();
-        }
     }
 }

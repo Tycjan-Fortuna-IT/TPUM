@@ -15,7 +15,5 @@
         public abstract bool Update(Guid id, IOrderDataTransferObject item);
 
         public abstract void PeriodicOrderProcessing();
-
-        public abstract void RestockItems();
     }
 }

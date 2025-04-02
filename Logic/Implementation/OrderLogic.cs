@@ -65,12 +65,11 @@ namespace Logic.Implementation
 
         public void PeriodicOrderProcessing()
         {
-            // TODO
-        }
-
-        public void RestockItems()
-        {
-            // TODO
+            foreach (var order in GetAll())
+            {
+                var buyer = order.Buyer;
+                var items = order.ItemsToBuy;
+            }
         }
     }
 }

@@ -312,7 +312,8 @@ namespace Presentation.ViewModel
 
         private void LogError(string action, Exception ex)
         {
-            Debug.WriteLine($"Error during {action}: {ex.Message}{Environment.NewLine}StackTrace: {ex.StackTrace}");
+            //Debug.WriteLine
+            Console.WriteLine($"Error during {action}: {ex.Message}{Environment.NewLine}StackTrace: {ex.StackTrace}");
         }
 
         public void Dispose()
