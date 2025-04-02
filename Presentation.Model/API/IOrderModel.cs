@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Presentation.Model.API
+﻿namespace Presentation.Model.API
 {
     public interface IOrderModel
     {
-        Guid Id { get; }
-        IHeroModel Buyer { get; }
-        IEnumerable<IItemModel> ItemsToBuy { get; }
+        public abstract Guid Id { get; }
+        public abstract IHeroModel Buyer { get; }
+        public abstract IEnumerable<IItemModel> ItemsToBuy { get; }
     }
 }

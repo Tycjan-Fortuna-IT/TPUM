@@ -2,9 +2,9 @@
 {
     public interface IHeroModel
     {
-        Guid Id { get; }
-        string Name { get; }
-        float Gold { get; }
-        IInventoryModel Inventory { get; }
+        public abstract Guid Id { get; }
+        public abstract string Name { get; }
+        public abstract float Gold { get; }
+        public abstract IInventoryModel Inventory { get; }
     }
 }

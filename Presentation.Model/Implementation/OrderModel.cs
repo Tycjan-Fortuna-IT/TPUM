@@ -1,8 +1,5 @@
-﻿using Presentation.Model.API;
-using Logic.API;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Logic.API;
+using Presentation.Model.API;
 
 namespace Presentation.Model.Implementation
 {

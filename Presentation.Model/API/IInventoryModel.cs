@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace Presentation.Model.API
+﻿namespace Presentation.Model.API
 {
     public interface IInventoryModel
     {
-        Guid Id { get; }
-        int Capacity { get; }
-        IEnumerable<IItemModel> Items { get; }
+        public abstract Guid Id { get; }
+        public abstract int Capacity { get; }
+        public abstract IEnumerable<IItemModel> Items { get; }
     }
 }

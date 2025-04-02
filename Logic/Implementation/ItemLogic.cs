@@ -6,6 +6,7 @@ namespace Logic.Implementation
     internal class ItemLogic : IItemLogic
     {
         private IDataRepository _repository;
+        private readonly object _lock = new object();
 
         public ItemLogic(IDataRepository repository)
         {
@@ -19,41 +20,59 @@ namespace Logic.Implementation
 
         public IEnumerable<IItemDataTransferObject> GetAll()
         {
-            List<IItemDataTransferObject> all = new List<IItemDataTransferObject>();
-
-            foreach (IItem item in _repository.GetAllItems())
+            lock (_lock)
             {
-                all.Add(Map(item));
-            }
+                List<IItemDataTransferObject> all = new List<IItemDataTransferObject>();
 
-            return all;
+                foreach (IItem item in _repository.GetAllItems())
+                {
+                    all.Add(Map(item));
+                }
+
+                return all;
+            }
         }
 
         public IItemDataTransferObject? Get(Guid id)
         {
-            IItem? item = _repository.GetItem(id);
+            lock (_lock)
+            {
+                IItem? item = _repository.GetItem(id);
 
-            return item is not null ? Map(item) : null;
+                return item is not null ? Map(item) : null;
+            }
         }
 
         public void Add(IItemDataTransferObject item)
         {
-            _repository.AddItem(new MappedDataItem(item));
+            lock (_lock)
+            {
+                _repository.AddItem(new MappedDataItem(item));
+            }
         }
 
         public bool RemoveById(Guid id)
         {
-            return _repository.RemoveItemById(id);
+            lock (_lock)
+            {
+                return _repository.RemoveItemById(id);
+            }
         }
 
         public bool Remove(IItemDataTransferObject item)
         {
-            return _repository.RemoveItem(new MappedDataItem(item));
+            lock (_lock)
+            {
+                return _repository.RemoveItem(new MappedDataItem(item));
+            }
         }
 
         public bool Update(Guid id, IItemDataTransferObject item)
         {
-            return _repository.UpdateItem(id, new MappedDataItem(item));
+            lock (_lock)
+            {
+                return _repository.UpdateItem(id, new MappedDataItem(item));
+            }
         }
     }
 }

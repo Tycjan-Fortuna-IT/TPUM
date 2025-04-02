@@ -6,6 +6,7 @@ namespace Logic.Implementation
     internal class InventoryLogic : IInventoryLogic
     {
         private IDataRepository _repository;
+        private readonly object _lock = new object();
 
         public InventoryLogic(IDataRepository repository)
         {
@@ -26,41 +27,59 @@ namespace Logic.Implementation
 
         public IEnumerable<IInventoryDataTransferObject> GetAll()
         {
-            List<IInventoryDataTransferObject> all = new List<IInventoryDataTransferObject>();
-
-            foreach (IInventory inventory in _repository.GetAllInventories())
+            lock (_lock)
             {
-                all.Add(Map(inventory));
-            }
+                List<IInventoryDataTransferObject> all = new List<IInventoryDataTransferObject>();
 
-            return all;
+                foreach (IInventory inventory in _repository.GetAllInventories())
+                {
+                    all.Add(Map(inventory));
+                }
+
+                return all;
+            }
         }
 
         public IInventoryDataTransferObject? Get(Guid id)
         {
-            IInventory? inventory = _repository.GetInventory(id);
+            lock (_lock)
+            {
+                IInventory? inventory = _repository.GetInventory(id);
 
-            return inventory is not null ? Map(inventory) : null;
+                return inventory is not null ? Map(inventory) : null;
+            }
         }
 
         public void Add(IInventoryDataTransferObject inventory)
         {
-            _repository.AddInventory(new MappedDataInventory(inventory));
+            lock (_lock)
+            {
+                _repository.AddInventory(new MappedDataInventory(inventory));
+            }
         }
 
         public bool RemoveById(Guid id)
         {
-            return _repository.RemoveInventoryById(id);
+            lock (_lock)
+            {
+                return _repository.RemoveInventoryById(id);
+            }
         }
 
         public bool Remove(IInventoryDataTransferObject inventory)
         {
-            return _repository.RemoveInventory(new MappedDataInventory(inventory));
+            lock (_lock)
+            {
+                return _repository.RemoveInventory(new MappedDataInventory(inventory));
+            }
         }
 
         public bool Update(Guid id, IInventoryDataTransferObject inventory)
         {
-            return _repository.UpdateInventory(id, new MappedDataInventory(inventory));
+            lock (_lock)
+            {
+                return _repository.UpdateInventory(id, new MappedDataInventory(inventory));
+            }
         }
     }
 }

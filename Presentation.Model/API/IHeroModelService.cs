@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace Presentation.Model.API
+﻿namespace Presentation.Model.API
 {
     public interface IHeroModelService
     {
-        IEnumerable<IHeroModel> GetAllHeroes();
-        IHeroModel? GetHero(Guid id);
-        void AddHero(Guid id, string name, float gold, Guid inventoryId);
-        bool RemoveHero(Guid id);
-        bool UpdateHero(Guid id, string name, float gold, Guid inventoryId);
-        void TriggerPeriodicItemMaintenanceDeduction();
+        public abstract IEnumerable<IHeroModel> GetAllHeroes();
+        public abstract IHeroModel? GetHero(Guid id);
+        public abstract void AddHero(Guid id, string name, float gold, Guid inventoryId);
+        public abstract bool RemoveHero(Guid id);
+        public abstract bool UpdateHero(Guid id, string name, float gold, Guid inventoryId);
+        public abstract void TriggerPeriodicItemMaintenanceDeduction();
     }
 }

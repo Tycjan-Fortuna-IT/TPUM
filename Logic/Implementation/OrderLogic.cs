@@ -6,6 +6,7 @@ namespace Logic.Implementation
     internal class OrderLogic : IOrderLogic
     {
         private IDataRepository _repository;
+        private readonly object _lock = new object();
 
         public OrderLogic(IDataRepository repository)
         {
@@ -26,69 +27,90 @@ namespace Logic.Implementation
 
         public IEnumerable<IOrderDataTransferObject> GetAll()
         {
-            List<IOrderDataTransferObject> all = new List<IOrderDataTransferObject>();
-
-            foreach (IOrder order in _repository.GetAllOrders())
+            lock (_lock)
             {
-                all.Add(Map(order));
-            }
+                List<IOrderDataTransferObject> all = new List<IOrderDataTransferObject>();
 
-            return all;
+                foreach (IOrder order in _repository.GetAllOrders())
+                {
+                    all.Add(Map(order));
+                }
+
+                return all;
+            }
         }
 
         public IOrderDataTransferObject? Get(Guid id)
         {
-            IOrder? order = _repository.GetOrder(id);
+            lock (_lock)
+            {
+                IOrder? order = _repository.GetOrder(id);
 
-            return order is not null ? Map(order) : null;
+                return order is not null ? Map(order) : null;
+            }
         }
 
         public void Add(IOrderDataTransferObject order)
         {
-            _repository.AddOrder(new MappedDataOrder(order));
+            lock (_lock)
+            {
+                _repository.AddOrder(new MappedDataOrder(order));
+            }
         }
 
         public bool RemoveById(Guid id)
         {
-            return _repository.RemoveOrderById(id);
+            lock (_lock)
+            {
+                return _repository.RemoveOrderById(id);
+            }
         }
 
         public bool Remove(IOrderDataTransferObject order)
         {
-            return _repository.RemoveOrder(new MappedDataOrder(order));
+            lock (_lock)
+            {
+                return _repository.RemoveOrder(new MappedDataOrder(order));
+            }
         }
 
         public bool Update(Guid id, IOrderDataTransferObject order)
         {
-            return _repository.UpdateOrder(id, new MappedDataOrder(order));
+            lock (_lock)
+            {
+                return _repository.UpdateOrder(id, new MappedDataOrder(order));
+            }
         }
 
         public void PeriodicOrderProcessing()
         {
-            foreach (IOrderDataTransferObject order in GetAll())
+            lock (_lock)
             {
-                IHeroDataTransferObject buyer = order.Buyer;
-
-                List<IItemDataTransferObject> newInventoryItems = new List<IItemDataTransferObject>();
-                foreach (IItemDataTransferObject item in order.ItemsToBuy)
+                foreach (IOrderDataTransferObject order in GetAll())
                 {
-                    newInventoryItems.Add(item);
+                    IHeroDataTransferObject buyer = order.Buyer;
 
-                    buyer.Gold -= item.Price;
+                    List<IItemDataTransferObject> newInventoryItems = new List<IItemDataTransferObject>();
+                    foreach (IItemDataTransferObject item in order.ItemsToBuy)
+                    {
+                        newInventoryItems.Add(item);
 
-                    _repository.RemoveItem(new MappedDataItem(item));
+                        buyer.Gold -= item.Price;
+
+                        _repository.RemoveItem(new MappedDataItem(item));
+                    }
+
+                    foreach (IItemDataTransferObject item in buyer.Inventory.Items)
+                    {
+                        newInventoryItems.Add(item);
+                    }
+
+                    buyer.Inventory = new InventoryDataTransferObject(buyer.Inventory.Id, buyer.Inventory.Capacity, newInventoryItems);
+
+                    _repository.UpdateHero(buyer.Id, new MappedDataHero(buyer));
+
+                    _repository.RemoveOrder(new MappedDataOrder(order));
                 }
-
-                foreach (IItemDataTransferObject item in buyer.Inventory.Items)
-                {
-                    newInventoryItems.Add(item);
-                }
-
-                buyer.Inventory = new InventoryDataTransferObject(buyer.Inventory.Id, buyer.Inventory.Capacity, newInventoryItems);
-
-                _repository.UpdateHero(buyer.Id, new MappedDataHero(buyer));
-
-                _repository.RemoveOrder(new MappedDataOrder(order));
             }
         }
     }

@@ -1,14 +1,12 @@
-﻿using System.Collections.Generic;
-
-namespace Presentation.Model.API
+﻿namespace Presentation.Model.API
 {
     public interface IOrderModelService
     {
-        IEnumerable<IOrderModel> GetAllOrders();
-        IOrderModel? GetOrder(Guid id);
-        void AddOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds);
-        bool RemoveOrder(Guid id);
+        public abstract IEnumerable<IOrderModel> GetAllOrders();
+        public abstract IOrderModel? GetOrder(Guid id);
+        public abstract void AddOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds);
+        public abstract bool RemoveOrder(Guid id);
 
-        void TriggerPeriodicOrderProcessing(); 
+        public abstract void TriggerPeriodicOrderProcessing();
     }
 }

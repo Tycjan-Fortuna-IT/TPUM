@@ -20,53 +20,74 @@ namespace Logic.Implementation
 
         public IEnumerable<IHeroDataTransferObject> GetAll()
         {
-            List<IHeroDataTransferObject> all = new List<IHeroDataTransferObject>();
-
-            foreach (IHero hero in _repository.GetAllHeroes())
+            lock (_lock)
             {
-                all.Add(Map(hero));
-            }
+                List<IHeroDataTransferObject> all = new List<IHeroDataTransferObject>();
 
-            return all;
+                foreach (IHero hero in _repository.GetAllHeroes())
+                {
+                    all.Add(Map(hero));
+                }
+
+                return all;
+            }
         }
 
         public IHeroDataTransferObject? Get(Guid id)
         {
-            IHero? hero = _repository.GetHero(id);
+            lock (_lock)
+            {
+                IHero? hero = _repository.GetHero(id);
 
-            return hero is not null ? Map(hero) : null;
+                return hero is not null ? Map(hero) : null;
+            }
         }
 
         public void Add(IHeroDataTransferObject hero)
         {
-            _repository.AddHero(new MappedDataHero(hero));
+            lock (_lock)
+            {
+                _repository.AddHero(new MappedDataHero(hero));
+            }
         }
 
         public bool RemoveById(Guid id)
         {
-            return _repository.RemoveHeroById(id);
+            lock (_lock)
+            {
+                return _repository.RemoveHeroById(id);
+            }
         }
 
         public bool Remove(IHeroDataTransferObject hero)
         {
-            return _repository.RemoveHero(new MappedDataHero(hero));
+            lock (_lock)
+            {
+                return _repository.RemoveHero(new MappedDataHero(hero));
+            }
         }
 
         public bool Update(Guid id, IHeroDataTransferObject hero)
         {
-            return _repository.UpdateHero(id, new MappedDataHero(hero));
+            lock (_lock)
+            {
+                return _repository.UpdateHero(id, new MappedDataHero(hero));
+            }
         }
 
         public void PeriodicItemMaintenanceDeduction()
         {
-            foreach (IHeroDataTransferObject hero in GetAll())
+            lock (_lock)
             {
-                foreach (IItemDataTransferObject item in hero.Inventory.Items)
+                foreach (IHeroDataTransferObject hero in GetAll())
                 {
-                    hero.Gold -= item.MaintenanceCost;
-                }
+                    foreach (IItemDataTransferObject item in hero.Inventory.Items)
+                    {
+                        hero.Gold -= item.MaintenanceCost;
+                    }
 
-                _repository.UpdateHero(hero.Id, new MappedDataHero(hero));
+                    _repository.UpdateHero(hero.Id, new MappedDataHero(hero));
+                }
             }
         }
     }

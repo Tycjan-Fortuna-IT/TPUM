@@ -2,9 +2,9 @@
 {
     public interface IItemModel
     {
-        Guid Id { get; }
-        string Name { get; }
-        int Price { get; }
-        int MaintenanceCost { get; }
+        public abstract Guid Id { get; }
+        public abstract string Name { get; }
+        public abstract int Price { get; }
+        public abstract int MaintenanceCost { get; }
     }
 }

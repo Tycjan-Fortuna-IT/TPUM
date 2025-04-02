@@ -159,7 +159,7 @@ namespace Presentation.ViewModel
             Action updateAction = () =>
             {
                 collection.Clear();
-                foreach (var item in newData)
+                foreach (T item in newData)
                 {
                     collection.Add(item);
                 }

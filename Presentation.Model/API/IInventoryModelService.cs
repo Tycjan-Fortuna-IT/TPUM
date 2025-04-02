@@ -2,9 +2,9 @@
 {
     public interface IInventoryModelService
     {
-        IEnumerable<IInventoryModel> GetAllInventories();
-        IInventoryModel? GetInventory(Guid id);
+        public abstract IEnumerable<IInventoryModel> GetAllInventories();
+        public abstract IInventoryModel? GetInventory(Guid id);
 
-        void Add(Guid id, int capacity);
+        public abstract void Add(Guid id, int capacity);
     }
 }
