@@ -99,7 +99,7 @@ namespace Presentation.ViewModel
                         try
                         {
                             // if the same hero is still selected
-                            var heroAfterCheck = _getSelectedHeroFunc();
+                            IHeroModel? heroAfterCheck = _getSelectedHeroFunc();
                             if (heroAfterCheck != null && heroAfterCheck.Id == currentHero.Id)
                             {
                                 await _refreshHeroDataAction(); // Ask ViewModel to refresh itself

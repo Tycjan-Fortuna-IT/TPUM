@@ -10,7 +10,7 @@ namespace Presentation.View
         {
             InitializeComponent();
 
-            var viewModel = new MainViewModel();
+            MainViewModel viewModel = new MainViewModel();
             this.DataContext = viewModel;
 
             Trace.Listeners.Add(new ConsoleTraceListener());

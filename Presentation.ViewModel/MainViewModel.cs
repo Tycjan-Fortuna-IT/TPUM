@@ -233,7 +233,7 @@ namespace Presentation.ViewModel
             {
                 SelectedHeroGold = _selectedHero.Gold;
                 SelectedHeroInventory.Clear();
-                foreach (var item in _selectedHero.Inventory.Items)
+                foreach (IItemModel item in _selectedHero.Inventory.Items)
                 {
                     SelectedHeroInventory.Add(item);
                 }
