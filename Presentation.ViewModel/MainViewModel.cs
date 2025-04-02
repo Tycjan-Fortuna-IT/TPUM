@@ -1,9 +1,6 @@
 ﻿using Presentation.Model.API;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace Presentation.ViewModel
 {
@@ -278,7 +275,8 @@ namespace Presentation.ViewModel
                 await Task.Run(() => _orderService.TriggerPeriodicOrderProcessing());
                 Debug.WriteLine($"Order processing on.");
 
-                Func<Task> refreshAction = async () => {
+                Func<Task> refreshAction = async () =>
+                {
                     await RefreshOrdersAsync();
                     if (SelectedHero != null && SelectedHero.Id == buyer.Id)
                     {
@@ -295,6 +293,9 @@ namespace Presentation.ViewModel
                     // Execute directly if no context
                     await refreshAction();
                 }
+
+
+                await LoadShopItemsAsync();
             }
             catch (Exception ex)
             {
@@ -312,8 +313,7 @@ namespace Presentation.ViewModel
 
         private void LogError(string action, Exception ex)
         {
-            //Debug.WriteLine
-            Console.WriteLine($"Error during {action}: {ex.Message}{Environment.NewLine}StackTrace: {ex.StackTrace}");
+            Debug.WriteLine($"Error during {action}: {ex.Message}{Environment.NewLine}StackTrace: {ex.StackTrace}");
         }
 
         public void Dispose()

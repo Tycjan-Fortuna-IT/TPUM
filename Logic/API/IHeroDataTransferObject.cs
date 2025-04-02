@@ -4,10 +4,10 @@ namespace Logic.API
     {
         public abstract Guid Id { get; }
 
-        public abstract string Name { get; }
+        public abstract string Name { get; set; }
 
-        public abstract float Gold { get; }
+        public abstract float Gold { get; set; }
 
-        public abstract IInventoryDataTransferObject Inventory { get; }
+        public abstract IInventoryDataTransferObject Inventory { get; set; }
     }
 }
