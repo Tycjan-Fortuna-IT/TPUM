@@ -16,12 +16,35 @@ namespace Data.Implementation
 
         public DataContext()
         {
-            // some initial data context state
-            Guid hero1Guid = new Guid("ea8ba3bf-4dcd-4f6e-b698-8a81d41ff7f7");
-            _heroes.Add(hero1Guid, new Hero(hero1Guid, "Hero 1", 2500.0f, new Inventory(25)));
+            Guid hero1Guid = Guid.NewGuid();
+            _heroes.Add(hero1Guid, new Hero(hero1Guid, "Arthas the Fallen", 3000.0f, new Inventory(30)));
 
-            Guid item1Guid = new Guid("a93af587-96a2-4d0e-8b52-451ea9d14562");
-            _items.Add(item1Guid, new Item(item1Guid, "Magic sword", 100, 25));
+            Guid hero2Guid = Guid.NewGuid();
+            _heroes.Add(hero2Guid, new Hero(hero2Guid, "Lyra the Shadowblade", 2200.0f, new Inventory(20)));
+
+            Guid hero3Guid = Guid.NewGuid();
+            _heroes.Add(hero3Guid, new Hero(hero3Guid, "Gorrok the Unbreakable", 5000.0f, new Inventory(40)));
+
+            Guid hero4Guid = Guid.NewGuid();
+            _heroes.Add(hero4Guid, new Hero(hero4Guid, "Zyra the Flameborn", 2800.0f, new Inventory(25)));
+
+            Guid item1Guid = Guid.NewGuid();
+            _items.Add(item1Guid, new Item(item1Guid, "Magic Sword of Flames", 150, 35));
+
+            Guid item2Guid = Guid.NewGuid();
+            _items.Add(item2Guid, new Item(item2Guid, "Ancient Shield of Aegis", 250, 50));
+
+            Guid item3Guid = Guid.NewGuid();
+            _items.Add(item3Guid, new Item(item3Guid, "Dagger of Eternal Night", 120, 20));
+
+            Guid item4Guid = Guid.NewGuid();
+            _items.Add(item4Guid, new Item(item4Guid, "Ring of Arcane Wisdom", 180, 10));
+
+            Guid item5Guid = Guid.NewGuid();
+            _items.Add(item5Guid, new Item(item5Guid, "Potion of Immortality", 500, 0));
+
+            Guid item6Guid = Guid.NewGuid();
+            _items.Add(item6Guid, new Item(item6Guid, "Bow of the Stormcaller", 200, 40));
         }
     }
 }

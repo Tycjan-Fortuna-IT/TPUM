@@ -86,6 +86,8 @@ namespace Logic.Implementation
 
                 buyer.Inventory = new InventoryDataTransferObject(buyer.Inventory.Id, buyer.Inventory.Capacity, newInventoryItems);
 
+                _repository.UpdateHero(buyer.Id, new MappedDataHero(buyer));
+
                 _repository.RemoveOrder(new MappedDataOrder(order));
             }
         }

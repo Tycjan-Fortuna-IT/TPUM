@@ -59,7 +59,15 @@ namespace Logic.Implementation
 
         public void PeriodicItemMaintenanceDeduction()
         {
-            // TODO
+            foreach (IHeroDataTransferObject hero in GetAll())
+            {
+                foreach (IItemDataTransferObject item in hero.Inventory.Items)
+                {
+                    hero.Gold -= item.MaintenanceCost;
+                }
+
+                _repository.UpdateHero(hero.Id, new MappedDataHero(hero));
+            }
         }
     }
 }

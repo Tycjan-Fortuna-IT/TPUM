@@ -8,7 +8,7 @@ namespace Presentation.ViewModel
         void Stop();
     }
 
-    public class HeroMaintenanceService : IHeroMaintenanceService
+    internal class HeroMaintenanceService : IHeroMaintenanceService
     {
         private readonly IHeroModelService _heroService;
         private readonly Func<IHeroModel?> _getSelectedHeroFunc; // get current hero from MainViewModel
@@ -29,7 +29,7 @@ namespace Presentation.ViewModel
             _getSelectedHeroFunc = getSelectedHeroFunc ?? throw new ArgumentNullException(nameof(getSelectedHeroFunc));
             _refreshHeroDataAction = refreshHeroDataAction ?? throw new ArgumentNullException(nameof(refreshHeroDataAction));
             _syncContext = uiSyncContext; // Can be null!!!
-            _interval = interval ?? TimeSpan.FromSeconds(60); // Item meintenance interval
+            _interval = interval ?? TimeSpan.FromSeconds(5); // Item meintenance interval
         }
 
         public void Start()

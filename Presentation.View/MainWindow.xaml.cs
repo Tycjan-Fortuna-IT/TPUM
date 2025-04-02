@@ -1,6 +1,6 @@
-﻿using System.Windows;
-using Presentation.ViewModel; // Need access to MainViewModel
-using System; // For IDisposable
+﻿using Presentation.ViewModel; // Need access to MainViewModel
+using System.Diagnostics;
+using System.Windows;
 
 namespace Presentation.View
 {
@@ -12,6 +12,8 @@ namespace Presentation.View
 
             var viewModel = new MainViewModel();
             this.DataContext = viewModel;
+
+            Trace.Listeners.Add(new ConsoleTraceListener());
         }
 
         private void Window_Closed(object sender, EventArgs e)

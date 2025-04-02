@@ -7,22 +7,24 @@ namespace Logic.API
     {
         public static IHeroLogic CreateHeroLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
-            return new HeroLogic(dataRepository ?? DataRepositoryFactory.CreateDataRepository());
+            return new HeroLogic(dataRepository ?? _repository);
         }
 
         public static IInventoryLogic CreateInventoryLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
-            return new InventoryLogic(dataRepository ?? DataRepositoryFactory.CreateDataRepository());
+            return new InventoryLogic(dataRepository ?? _repository);
         }
 
         public static IItemLogic CreateItemLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
-            return new ItemLogic(dataRepository ?? DataRepositoryFactory.CreateDataRepository());
+            return new ItemLogic(dataRepository ?? _repository);
         }
 
         public static IOrderLogic CreateOrderLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
-            return new OrderLogic(dataRepository ?? DataRepositoryFactory.CreateDataRepository());
+            return new OrderLogic(dataRepository ?? _repository);
         }
+
+        private static IDataRepository _repository = DataRepositoryFactory.CreateDataRepository();
     }
 }
