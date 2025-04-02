@@ -4,7 +4,7 @@ using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
-    internal class OrderModelService : IOrderModelService
+    public class OrderModelService : IOrderModelService
     {
         private readonly IOrderLogic _orderLogic;
         private readonly IHeroLogic _heroLogic;
@@ -25,17 +25,17 @@ namespace Presentation.Model.Implementation
 
         public IOrderModel? GetOrder(Guid id)
         {
-            var dto = _orderLogic.Get(id);
+            IOrderDataTransferObject? dto = _orderLogic.Get(id);
             return dto == null ? null : new OrderModel(dto); // Map DTO to Model
         }
 
         public void AddOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds)
         {
-            var buyerDto = _heroLogic.Get(buyerId);
-            var itemDtos = new List<IItemDataTransferObject>();
-            foreach (var itemId in itemIds)
+            IHeroDataTransferObject? buyerDto = _heroLogic.Get(buyerId);
+            List<IItemDataTransferObject> itemDtos = new List<IItemDataTransferObject>();
+            foreach (Guid itemId in itemIds)
             {
-                var itemDto = _itemLogic.Get(itemId);
+                IItemDataTransferObject? itemDto = _itemLogic.Get(itemId);
                 if (itemDto == null)
                 {
                     throw new InvalidOperationException($"Item with ID {itemId} not found.");
@@ -43,7 +43,7 @@ namespace Presentation.Model.Implementation
                 itemDtos.Add(itemDto);
             }
 
-            var transientDto = new TransientOrderDTO(id, buyerDto, itemDtos);
+            TransientOrderDTO transientDto = new TransientOrderDTO(id, buyerDto, itemDtos);
             _orderLogic.Add(transientDto);
         }
 

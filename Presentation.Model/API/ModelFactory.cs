@@ -14,28 +14,28 @@ namespace Presentation.Model.API
         // Static creation methods directly
         public static IHeroModelService CreateHeroModelService(IHeroLogic? heroLogic = null, IInventoryLogic? inventoryLogic = null)
         {
-            var resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
-            var resolvedInventoryLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
+            IHeroLogic resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
+            IInventoryLogic resolvedInventoryLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
             return new HeroModelService(resolvedHeroLogic, resolvedInventoryLogic);
         }
 
         public static IInventoryModelService CreateInventoryModelService(IInventoryLogic? inventoryLogic = null)
         {
-            var resolvedLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
+            IInventoryLogic resolvedLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
             return new InventoryModelService(resolvedLogic);
         }
 
         public static IItemModelService CreateItemModelService(IItemLogic? itemLogic = null)
         {
-            var resolvedLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
+            IItemLogic resolvedLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
             return new ItemModelService(resolvedLogic);
         }
 
         public static IOrderModelService CreateOrderModelService(IOrderLogic? orderLogic = null, IHeroLogic? heroLogic = null, IItemLogic? itemLogic = null)
         {
-            var resolvedOrderLogic = ResolveLogic(orderLogic, () => LogicFactory.CreateOrderLogic());
-            var resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
-            var resolvedItemLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
+            IOrderLogic resolvedOrderLogic = ResolveLogic(orderLogic, () => LogicFactory.CreateOrderLogic());
+            IHeroLogic resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
+            IItemLogic resolvedItemLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
             return new OrderModelService(resolvedOrderLogic, resolvedHeroLogic, resolvedItemLogic);
         }
     }

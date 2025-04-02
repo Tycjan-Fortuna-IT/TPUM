@@ -131,7 +131,7 @@ namespace Presentation.ViewModel
         {
             try
             {
-                var heroes = await Task.Run(() => _heroService.GetAllHeroes().ToList());
+                List<IHeroModel> heroes = await Task.Run(() => _heroService.GetAllHeroes().ToList());
                 UpdateObservableCollection(Heroes, heroes);
             }
             catch (Exception ex) { LogError("loading heroes", ex); }
@@ -141,7 +141,7 @@ namespace Presentation.ViewModel
         {
             try
             {
-                var items = await Task.Run(() => _itemService.GetAllItems().ToList());
+                List<IItemModel> items = await Task.Run(() => _itemService.GetAllItems().ToList());
                 UpdateObservableCollection(ShopItems, items);
             }
             catch (Exception ex) { LogError("loading shop items", ex); }
@@ -151,7 +151,7 @@ namespace Presentation.ViewModel
         {
             try
             {
-                var orders = await Task.Run(() => _orderService.GetAllOrders().ToList());
+                List<IOrderModel> orders = await Task.Run(() => _orderService.GetAllOrders().ToList());
                 UpdateObservableCollection(Orders, orders);
             }
             catch (Exception ex) { LogError("refreshing orders", ex); }
@@ -187,7 +187,7 @@ namespace Presentation.ViewModel
 
             try
             {
-                var updatedHeroData = await Task.Run(() => _heroService.GetHero(currentHero.Id));
+                IHeroModel? updatedHeroData = await Task.Run(() => _heroService.GetHero(currentHero.Id));
 
                 // Prepare the UI update
                 Action updateAction = () =>
@@ -201,7 +201,7 @@ namespace Presentation.ViewModel
                     {
                         SelectedHeroGold = updatedHeroData.Gold;
                         SelectedHeroInventory.Clear();
-                        foreach (var item in updatedHeroData.Inventory.Items)
+                        foreach (IItemModel item in updatedHeroData.Inventory.Items)
                         {
                             SelectedHeroInventory.Add(item);
                         }

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Presentation.Model.Implementation
 {
-    internal class InventoryModelService : IInventoryModelService
+    public class InventoryModelService : IInventoryModelService
     {
         private readonly IInventoryLogic _inventoryLogic;
 
@@ -22,7 +22,7 @@ namespace Presentation.Model.Implementation
 
         public IInventoryModel? GetInventory(Guid id)
         {
-            var dto = _inventoryLogic.Get(id);
+            IInventoryDataTransferObject? dto = _inventoryLogic.Get(id);
             return dto == null ? null : new InventoryModel(dto); // Map DTO to Model
         }
     }
