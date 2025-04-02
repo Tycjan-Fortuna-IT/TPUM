@@ -20,14 +20,14 @@ namespace Presentation.Model.Tests
         private Guid _inv1Id, _inv2Id;
         private Guid _item1Id, _item2Id, _item3Id;
 
-        private ConcreteOrderDto _orderDto1 = null!;
-        private ConcreteHeroDto _heroDto1 = null!;
-        private ConcreteHeroDto _heroDto2 = null!;
-        private ConcreteInventoryDto _invDto1 = null!;
-        private ConcreteInventoryDto _invDto2 = null!;
-        private ConcreteItemDto _itemDto1 = null!;
-        private ConcreteItemDto _itemDto2 = null!;
-        private ConcreteItemDto _itemDto3 = null!; // Item not in order
+        private DummyOrderDto _orderDto1 = null!;
+        private DummyHeroDto _heroDto1 = null!;
+        private DummyHeroDto _heroDto2 = null!;
+        private DummyInventoryDto _invDto1 = null!;
+        private DummyInventoryDto _invDto2 = null!;
+        private DummyItemDto _itemDto1 = null!;
+        private DummyItemDto _itemDto2 = null!;
+        private DummyItemDto _itemDto3 = null!; // Item not in order
 
         [TestInitialize]
         public void TestInitialize()
@@ -40,9 +40,9 @@ namespace Presentation.Model.Tests
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
             _item3Id = Guid.NewGuid();
-            _itemDto1 = new ConcreteItemDto { Id = _item1Id, Name = "Axe", Price = 120, MaintenanceCost = 6 };
-            _itemDto2 = new ConcreteItemDto { Id = _item2Id, Name = "Helmet", Price = 75, MaintenanceCost = 2 };
-            _itemDto3 = new ConcreteItemDto { Id = _item3Id, Name = "Boots", Price = 40, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Axe", Price = 120, MaintenanceCost = 6 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Helmet", Price = 75, MaintenanceCost = 2 };
+            _itemDto3 = new DummyItemDto { Id = _item3Id, Name = "Boots", Price = 40, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
             _dummyItemLogic.Items.Add(_itemDto3.Id, _itemDto3);
@@ -50,20 +50,20 @@ namespace Presentation.Model.Tests
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new ConcreteInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject>() };
-            _invDto2 = new ConcreteInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() };
+            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject>() };
+            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() };
             _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
             _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
 
             _hero1Id = Guid.NewGuid();
             _hero2Id = Guid.NewGuid();
-            _heroDto1 = new ConcreteHeroDto { Id = _hero1Id, Name = "BuyerHero", Gold = 1000f, Inventory = _invDto1 };
-            _heroDto2 = new ConcreteHeroDto { Id = _hero2Id, Name = "OtherHero", Gold = 500f, Inventory = _invDto2 };
+            _heroDto1 = new DummyHeroDto { Id = _hero1Id, Name = "BuyerHero", Gold = 1000f, Inventory = _invDto1 };
+            _heroDto2 = new DummyHeroDto { Id = _hero2Id, Name = "OtherHero", Gold = 500f, Inventory = _invDto2 };
             _dummyHeroLogic.Heroes.Add(_heroDto1.Id, _heroDto1);
             _dummyHeroLogic.Heroes.Add(_heroDto2.Id, _heroDto2);
 
             _order1Id = Guid.NewGuid();
-            _orderDto1 = new ConcreteOrderDto
+            _orderDto1 = new DummyOrderDto
             {
                 Id = _order1Id,
                 Buyer = _heroDto1,

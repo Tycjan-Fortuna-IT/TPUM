@@ -1,10 +1,10 @@
-﻿using Presentation.Model.API;
+﻿using Logic.API;
+using Presentation.Model.API;
 using Presentation.Model.Implementation.Mapper;
-using Logic.API;
 
 namespace Presentation.Model.Implementation
 {
-    public class ItemModelService : IItemModelService
+    internal class ItemModelService : IItemModelService
     {
         private readonly IItemLogic _itemLogic;
 

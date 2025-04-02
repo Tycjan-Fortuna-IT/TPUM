@@ -1,10 +1,10 @@
-﻿using Presentation.Model.API;
-using Logic.API;
+﻿using Logic.API;
+using Presentation.Model.API;
 using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
-    public class HeroModelService : IHeroModelService
+    internal class HeroModelService : IHeroModelService
     {
         private readonly IHeroLogic _heroLogic;
         private readonly IInventoryLogic _inventoryLogic;
@@ -29,7 +29,7 @@ namespace Presentation.Model.Implementation
 
         public void AddHero(Guid id, string name, float gold, Guid inventoryId)
         {
-            IInventoryDataTransferObject? inventoryDto = _inventoryLogic.Get(inventoryId);
+            IInventoryDataTransferObject inventoryDto = _inventoryLogic.Get(inventoryId)!;
             TransientHeroDTO? transientDto = new TransientHeroDTO(id, name, gold, inventoryDto);
             _heroLogic.Add(transientDto);
         }
@@ -42,7 +42,8 @@ namespace Presentation.Model.Implementation
 
         public bool UpdateHero(Guid id, string name, float gold, Guid inventoryId)
         {
-            IInventoryDataTransferObject? inventoryDto = _inventoryLogic.Get(inventoryId);
+            IInventoryDataTransferObject inventoryDto = _inventoryLogic.Get(inventoryId)!;
+
             TransientHeroDTO? transientDto = new TransientHeroDTO(id, name, gold, inventoryDto);
             return _heroLogic.Update(id, transientDto);
         }

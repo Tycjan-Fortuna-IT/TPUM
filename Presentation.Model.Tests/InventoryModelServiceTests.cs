@@ -14,10 +14,10 @@ namespace Presentation.Model.Tests
         private Guid _inv1Id, _inv2Id;
         private Guid _item1Id, _item2Id;
 
-        private ConcreteInventoryDto _invDto1 = null!;
-        private ConcreteInventoryDto _invDto2 = null!;
-        private ConcreteItemDto _itemDto1 = null!;
-        private ConcreteItemDto _itemDto2 = null!;
+        private DummyInventoryDto _invDto1 = null!;
+        private DummyInventoryDto _invDto2 = null!;
+        private DummyItemDto _itemDto1 = null!;
+        private DummyItemDto _itemDto2 = null!;
 
         [TestInitialize]
         public void TestInitialize()
@@ -29,15 +29,15 @@ namespace Presentation.Model.Tests
             // Create Test DTOs
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new ConcreteItemDto { Id = _item1Id, Name = "Potion", Price = 10, MaintenanceCost = 0 };
-            _itemDto2 = new ConcreteItemDto { Id = _item2Id, Name = "Scroll", Price = 25, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Potion", Price = 10, MaintenanceCost = 0 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Scroll", Price = 25, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new ConcreteInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject> { _itemDto1, _itemDto2 } };
-            _invDto2 = new ConcreteInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() }; // Empty
+            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject> { _itemDto1, _itemDto2 } };
+            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() }; // Empty
             _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
             _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
 

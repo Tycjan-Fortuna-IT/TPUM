@@ -177,7 +177,7 @@ namespace Presentation.ViewModel
 
 
         // Refreshes Gold and Inventory
-        public async Task RefreshSelectedHeroDataAsync()
+        private async Task RefreshSelectedHeroDataAsync()
         {
             IHeroModel? currentHero = _selectedHero;
             if (currentHero == null) return;

@@ -1,10 +1,10 @@
-﻿using Presentation.Model.API;
-using Logic.API;
+﻿using Logic.API;
+using Presentation.Model.API;
 using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
-    public class OrderModelService : IOrderModelService
+    internal class OrderModelService : IOrderModelService
     {
         private readonly IOrderLogic _orderLogic;
         private readonly IHeroLogic _heroLogic;
@@ -31,7 +31,7 @@ namespace Presentation.Model.Implementation
 
         public void AddOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds)
         {
-            IHeroDataTransferObject? buyerDto = _heroLogic.Get(buyerId);
+            IHeroDataTransferObject buyerDto = _heroLogic.Get(buyerId)!;
             List<IItemDataTransferObject> itemDtos = new List<IItemDataTransferObject>();
             foreach (Guid itemId in itemIds)
             {

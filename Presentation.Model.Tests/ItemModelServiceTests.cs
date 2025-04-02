@@ -11,8 +11,8 @@ namespace Presentation.Model.Tests
 
         private Guid _item1Id, _item2Id;
 
-        private ConcreteItemDto _itemDto1 = null!;
-        private ConcreteItemDto _itemDto2 = null!;
+        private DummyItemDto _itemDto1 = null!;
+        private DummyItemDto _itemDto2 = null!;
 
         [TestInitialize]
         public void TestInitialize()
@@ -21,8 +21,8 @@ namespace Presentation.Model.Tests
 
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new ConcreteItemDto { Id = _item1Id, Name = "Elixir", Price = 50, MaintenanceCost = 2 };
-            _itemDto2 = new ConcreteItemDto { Id = _item2Id, Name = "Dagger", Price = 30, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Elixir", Price = 50, MaintenanceCost = 2 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Dagger", Price = 30, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 

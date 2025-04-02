@@ -1,17 +1,21 @@
-﻿using Presentation.Model.API;
-using Logic.API;
-using System;
-using System.Collections.Generic;
+﻿using Logic.API;
+using Presentation.Model.API;
+using Presentation.Model.Implementation.Mapper;
 
 namespace Presentation.Model.Implementation
 {
-    public class InventoryModelService : IInventoryModelService
+    internal class InventoryModelService : IInventoryModelService
     {
         private readonly IInventoryLogic _inventoryLogic;
 
         public InventoryModelService(IInventoryLogic inventoryLogic)
         {
             _inventoryLogic = inventoryLogic ?? throw new ArgumentNullException(nameof(inventoryLogic));
+        }
+
+        public void Add(Guid id, int capacity)
+        {
+            _inventoryLogic.Add(new TransientInventoryDTO(id, capacity, new List<IItemDataTransferObject>()));
         }
 
         public IEnumerable<IInventoryModel> GetAllInventories()

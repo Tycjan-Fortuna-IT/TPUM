@@ -197,7 +197,7 @@ namespace Presentation.Model.Tests
     }
 
 
-    internal class ConcreteHeroDto : IHeroDataTransferObject
+    internal class DummyHeroDto : IHeroDataTransferObject
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -206,7 +206,7 @@ namespace Presentation.Model.Tests
         public IInventoryDataTransferObject Inventory { get; set; } = null!; // Initialize with null-forgiving, set in test setup
     }
 
-    internal class ConcreteInventoryDto : IInventoryDataTransferObject
+    internal class DummyInventoryDto : IInventoryDataTransferObject
     {
         public Guid Id { get; set; }
         public int Capacity { get; set; }
@@ -214,7 +214,7 @@ namespace Presentation.Model.Tests
         public IEnumerable<IItemDataTransferObject> Items { get; set; } = Enumerable.Empty<IItemDataTransferObject>();
     }
 
-    internal class ConcreteItemDto : IItemDataTransferObject
+    internal class DummyItemDto : IItemDataTransferObject
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
@@ -222,7 +222,7 @@ namespace Presentation.Model.Tests
         public int MaintenanceCost { get; set; }
     }
 
-    internal class ConcreteOrderDto : IOrderDataTransferObject
+    internal class DummyOrderDto : IOrderDataTransferObject
     {
         public Guid Id { get; set; }
         // Uses object reference as per the interface

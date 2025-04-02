@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows.Input; // Core ICommand interface (usually from System.ObjectModel or System.Windows.Input contract)
+﻿using System.Windows.Input; // Core ICommand interface (usually from System.ObjectModel or System.Windows.Input contract)
 
 namespace Presentation.ViewModel
 {

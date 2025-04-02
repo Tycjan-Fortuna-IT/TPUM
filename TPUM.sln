@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.View", "Presen
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.Model.Tests", "Presentation.Model.Tests\Presentation.Model.Tests.csproj", "{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation.ViewModel.Tests", "Presentation.ViewModel.Tests\Presentation.ViewModel.Tests.csproj", "{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

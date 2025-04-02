@@ -25,14 +25,14 @@ namespace Presentation.Model.Tests.Dummies
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public float Gold { get; set; }
-        public IInventoryModel Inventory { get; set; }
+        public IInventoryModel Inventory { get; set; } = default!;
     }
 
     // Dummy Order Model
     internal class DummyOrderModel : IOrderModel
     {
         public Guid Id { get; set; }
-        public IHeroModel Buyer { get; set; }
+        public IHeroModel Buyer { get; set; } = default!;
         public IEnumerable<IItemModel> ItemsToBuy { get; set; } = Enumerable.Empty<IItemModel>();
     }
 }

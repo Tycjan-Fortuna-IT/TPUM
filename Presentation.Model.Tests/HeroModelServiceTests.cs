@@ -16,12 +16,12 @@ namespace Presentation.Model.Tests
         private Guid _inv1Id, _inv2Id;
         private Guid _item1Id, _item2Id;
 
-        private ConcreteHeroDto _heroDto1 = null!;
-        private ConcreteHeroDto _heroDto2 = null!;
-        private ConcreteInventoryDto _invDto1 = null!;
-        private ConcreteInventoryDto _invDto2 = null!;
-        private ConcreteItemDto _itemDto1 = null!;
-        private ConcreteItemDto _itemDto2 = null!;
+        private DummyHeroDto _heroDto1 = null!;
+        private DummyHeroDto _heroDto2 = null!;
+        private DummyInventoryDto _invDto1 = null!;
+        private DummyInventoryDto _invDto2 = null!;
+        private DummyItemDto _itemDto1 = null!;
+        private DummyItemDto _itemDto2 = null!;
 
 
         [TestInitialize]
@@ -34,24 +34,24 @@ namespace Presentation.Model.Tests
             // Create Test DTOs
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new ConcreteItemDto { Id = _item1Id, Name = "Sword", Price = 100, MaintenanceCost = 5 };
-            _itemDto2 = new ConcreteItemDto { Id = _item2Id, Name = "Shield", Price = 80, MaintenanceCost = 3 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Sword", Price = 100, MaintenanceCost = 5 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Shield", Price = 80, MaintenanceCost = 3 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new ConcreteInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject> { _itemDto1 } };
-            _invDto2 = new ConcreteInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() }; // Empty inventory
+            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IItemDataTransferObject> { _itemDto1 } };
+            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IItemDataTransferObject>() }; // Empty inventory
             _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
             _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
 
 
             _hero1Id = Guid.NewGuid();
             _hero2Id = Guid.NewGuid();
-            _heroDto1 = new ConcreteHeroDto { Id = _hero1Id, Name = "Bob", Gold = 500f, Inventory = _invDto1 };
-            _heroDto2 = new ConcreteHeroDto { Id = _hero2Id, Name = "Achilles", Gold = 300f, Inventory = _invDto2 };
+            _heroDto1 = new DummyHeroDto { Id = _hero1Id, Name = "Bob", Gold = 500f, Inventory = _invDto1 };
+            _heroDto2 = new DummyHeroDto { Id = _hero2Id, Name = "Achilles", Gold = 300f, Inventory = _invDto2 };
             _dummyHeroLogic.Heroes.Add(_heroDto1.Id, _heroDto1);
             _dummyHeroLogic.Heroes.Add(_heroDto2.Id, _heroDto2);
 
