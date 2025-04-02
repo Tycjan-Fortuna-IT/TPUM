@@ -65,10 +65,28 @@ namespace Logic.Implementation
 
         public void PeriodicOrderProcessing()
         {
-            foreach (var order in GetAll())
+            foreach (IOrderDataTransferObject order in GetAll())
             {
-                var buyer = order.Buyer;
-                var items = order.ItemsToBuy;
+                IHeroDataTransferObject buyer = order.Buyer;
+
+                List<IItemDataTransferObject> newInventoryItems = new List<IItemDataTransferObject>();
+                foreach (IItemDataTransferObject item in order.ItemsToBuy)
+                {
+                    newInventoryItems.Add(item);
+
+                    buyer.Gold -= item.Price;
+
+                    _repository.RemoveItem(new MappedDataItem(item));
+                }
+
+                foreach (IItemDataTransferObject item in buyer.Inventory.Items)
+                {
+                    newInventoryItems.Add(item);
+                }
+
+                buyer.Inventory = new InventoryDataTransferObject(buyer.Inventory.Id, buyer.Inventory.Capacity, newInventoryItems);
+
+                _repository.RemoveOrder(new MappedDataOrder(order));
             }
         }
     }

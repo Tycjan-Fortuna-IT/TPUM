@@ -6,6 +6,7 @@ namespace Logic.Implementation
     internal class HeroLogic : IHeroLogic
     {
         private IDataRepository _repository;
+        private readonly object _lock = new object();
 
         public HeroLogic(IDataRepository repository)
         {
