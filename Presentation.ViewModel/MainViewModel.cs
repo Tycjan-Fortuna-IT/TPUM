@@ -73,9 +73,9 @@ namespace Presentation.ViewModel
 
         public MainViewModel()
             // create default services from the factory and inject them to constructor below
-            : this(ModelFactoryAbstract.CreateFactory().CreateHeroModelService(),
-                   ModelFactoryAbstract.CreateFactory().CreateItemModelService(),
-                   ModelFactoryAbstract.CreateFactory().CreateOrderModelService())
+            : this(ModelFactory.CreateHeroModelService(),
+                   ModelFactory.CreateItemModelService(),
+                   ModelFactory.CreateOrderModelService())
         {
         }
 

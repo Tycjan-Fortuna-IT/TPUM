@@ -1,49 +1,41 @@
-﻿using Presentation.Model.API;
-using Logic.API;
-using System;
+﻿using Logic.API;
+using Presentation.Model.Implementation;
 
-namespace Presentation.Model.Implementation
+namespace Presentation.Model.API
 {
-    internal class ModelFactory : ModelFactoryAbstract
+    public abstract class ModelFactory
     {
-        public ModelFactory() { }
-
-        private TLogic ResolveLogic<TLogic>(TLogic? injectedLogic, Func<TLogic> defaultStaticCreator) where TLogic : class
+        // Helper stays the same or can be inlined
+        private static TLogic ResolveLogic<TLogic>(TLogic? injectedLogic, Func<TLogic> defaultStaticCreator) where TLogic : class
         {
-            if (injectedLogic != null)
-            {
-                return injectedLogic;
-            }
-            return defaultStaticCreator();
+            return injectedLogic ?? defaultStaticCreator();
         }
 
-        // wrap methods to make this layer independent
-        public override IHeroModelService CreateHeroModelService(IHeroLogic? heroLogic = null, IInventoryLogic? inventoryLogic = null)
+        // Static creation methods directly
+        public static IHeroModelService CreateHeroModelService(IHeroLogic? heroLogic = null, IInventoryLogic? inventoryLogic = null)
         {
             var resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
             var resolvedInventoryLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
-
             return new HeroModelService(resolvedHeroLogic, resolvedInventoryLogic);
         }
 
-        public override IInventoryModelService CreateInventoryModelService(IInventoryLogic? inventoryLogic = null)
+        public static IInventoryModelService CreateInventoryModelService(IInventoryLogic? inventoryLogic = null)
         {
             var resolvedLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
             return new InventoryModelService(resolvedLogic);
         }
 
-        public override IItemModelService CreateItemModelService(IItemLogic? itemLogic = null)
+        public static IItemModelService CreateItemModelService(IItemLogic? itemLogic = null)
         {
             var resolvedLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
             return new ItemModelService(resolvedLogic);
         }
 
-        public override IOrderModelService CreateOrderModelService(IOrderLogic? orderLogic = null, IHeroLogic? heroLogic = null, IItemLogic? itemLogic = null)
+        public static IOrderModelService CreateOrderModelService(IOrderLogic? orderLogic = null, IHeroLogic? heroLogic = null, IItemLogic? itemLogic = null)
         {
             var resolvedOrderLogic = ResolveLogic(orderLogic, () => LogicFactory.CreateOrderLogic());
             var resolvedHeroLogic = ResolveLogic(heroLogic, () => LogicFactory.CreateHeroLogic());
             var resolvedItemLogic = ResolveLogic(itemLogic, () => LogicFactory.CreateItemLogic());
-
             return new OrderModelService(resolvedOrderLogic, resolvedHeroLogic, resolvedItemLogic);
         }
     }
