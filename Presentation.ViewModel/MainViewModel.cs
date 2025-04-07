@@ -1,7 +1,8 @@
-﻿using Client.Presentation.ViewModel.MVVMLight;
+﻿using Client.Logic.API;
+using Client.Presentation.Model.API;
+using Client.Presentation.ViewModel.MVVMLight;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using Client.Presentation.Model.API;
 
 namespace Client.Presentation.ViewModel
 {
@@ -62,8 +63,25 @@ namespace Client.Presentation.ViewModel
             private set => SetField(ref _selectedHeroGold, value);
         }
 
+        private bool _isConnected = false;
+        public bool IsConnected
+        {
+            get => _isConnected;
+            set
+            {
+                if (SetField(ref _isConnected, value))
+                {
+                    ConnectToServerCommand.RaiseCanExecuteChanged();
+                    DisconnectFromServerCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+
+
         // Commands
         public RelayCommand BuyItemCommand { get; }
+        public RelayCommand ConnectToServerCommand { get; }
+        public RelayCommand DisconnectFromServerCommand { get; }
 
         #endregion
 
@@ -77,11 +95,14 @@ namespace Client.Presentation.ViewModel
         {
         }
 
+        public IConnectionService _connectionService = null!;
+
         public MainViewModel(
             IHeroModelService heroService,
             IItemModelService itemService,
             IOrderModelService orderService)
         {
+            _connectionService = ConnectionServiceFactory.CreateConnectionService();
 
             _syncContext = SynchronizationContext.Current;
             if (_syncContext == null)
@@ -102,6 +123,8 @@ namespace Client.Presentation.ViewModel
 
             // Initialize Commands
             BuyItemCommand = new RelayCommand(ExecuteBuyItem, CanExecuteBuyItem);
+            ConnectToServerCommand = new RelayCommand(ExecuteConnectToServer, CanConnectToServer);
+            DisconnectFromServerCommand = new RelayCommand(ExecuteDisconnectFromServer, CanDisconnectFromServer);
 
             _ = LoadInitialDataAsync();
 
@@ -250,6 +273,33 @@ namespace Client.Presentation.ViewModel
 
         #region Command Implementations
 
+        private void ExecuteConnectToServer(object? parameter)
+        {
+            IsConnected = true;
+
+            Task.Run(async () =>
+            {
+                await _connectionService.Connect(new Uri("ws://localhost:8081/ws"));
+            });
+        }
+
+        private bool CanConnectToServer(object? parameter)
+        {
+            return !IsConnected;
+        }
+
+        private async void ExecuteDisconnectFromServer(object? parameter)
+        {
+            await _connectionService.Disconnect();
+
+            IsConnected = false;
+        }
+
+        private bool CanDisconnectFromServer(object? parameter)
+        {
+            return IsConnected;
+        }
+
         private bool CanExecuteBuyItem(object? parameter)
         {
             // Can only buy if a hero and item are selected
@@ -319,6 +369,9 @@ namespace Client.Presentation.ViewModel
 
         public void Dispose()
         {
+            if (IsConnected)
+                _connectionService.Disconnect().Wait();
+
             Debug.WriteLine("Disposing MainViewModel...");
             _maintenanceService?.Dispose();
             GC.SuppressFinalize(this);

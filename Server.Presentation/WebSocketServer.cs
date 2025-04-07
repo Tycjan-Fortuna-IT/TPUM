@@ -52,9 +52,16 @@ namespace Server.Presentation
                 return m_WebSocket.SendAsync(message.GetArraySegment(), WebSocketMessageType.Text, true, CancellationToken.None);
             }
 
+            private bool isRunning = true;
+
             public override Task DisconnectAsync()
             {
-                return m_WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Shutdown procedure started", CancellationToken.None);
+                isRunning = false;
+
+                if (!isRunning)
+                    return m_WebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Shutdown procedure started", CancellationToken.None);
+
+                return Task.CompletedTask;
             }
 
             public override string ToString()
@@ -69,7 +76,7 @@ namespace Server.Presentation
             {
                 byte[] buffer = new byte[1024];
 
-                while (true)
+                while (isRunning)
                 {
                     ArraySegment<byte> _segments = new ArraySegment<byte>(buffer);
                     WebSocketReceiveResult _receiveResult = ws.ReceiveAsync(_segments, CancellationToken.None).Result;
