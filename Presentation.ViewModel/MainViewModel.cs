@@ -102,7 +102,30 @@ namespace Client.Presentation.ViewModel
             IItemModelService itemService,
             IOrderModelService orderService)
         {
+            // Initialize Commands
+            BuyItemCommand = new RelayCommand(ExecuteBuyItem, CanExecuteBuyItem);
+            ConnectToServerCommand = new RelayCommand(ExecuteConnectToServer, CanConnectToServer);
+            DisconnectFromServerCommand = new RelayCommand(ExecuteDisconnectFromServer, CanDisconnectFromServer);
+
             _connectionService = ConnectionServiceFactory.CreateConnectionService();
+
+            Task.Run(async () =>
+            {
+                IsConnected = true;
+                await _connectionService.Connect(new Uri("ws://localhost:8081/ws"));
+
+                // run after 2s to give time to connect
+                await Task.Delay(2000).ContinueWith(async _ =>
+                {
+                    await _connectionService.FetchItems();
+
+                    await Task.Delay(2000).ContinueWith(_ =>
+                    {
+                        _ = LoadInitialDataAsync();
+                    });
+                });
+            });
+
 
             _syncContext = SynchronizationContext.Current;
             if (_syncContext == null)
@@ -120,13 +143,6 @@ namespace Client.Presentation.ViewModel
                 GetSelectedHeroForMaintenance,
                 RefreshSelectedHeroDataAsync,
                 _syncContext);
-
-            // Initialize Commands
-            BuyItemCommand = new RelayCommand(ExecuteBuyItem, CanExecuteBuyItem);
-            ConnectToServerCommand = new RelayCommand(ExecuteConnectToServer, CanConnectToServer);
-            DisconnectFromServerCommand = new RelayCommand(ExecuteDisconnectFromServer, CanDisconnectFromServer);
-
-            _ = LoadInitialDataAsync();
 
             // Start the background maintenance task
             _maintenanceService.Start();

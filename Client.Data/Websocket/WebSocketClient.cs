@@ -6,6 +6,9 @@ namespace Client.Data.Websocket
 {
     public static class WebSocketClient
     {
+        public static event Action<string>? OnMessage;
+        public static event Action? OnDataArrived;
+
         public static WebSocketConnection CurrentConnection { get; private set; } = default!;
 
         public static async Task<WebSocketConnection> Connect(Uri peer, Action<string> log)
@@ -20,6 +23,7 @@ namespace Client.Data.Websocket
                     log($"Opening WebSocket connection to remote server {peer}");
                     WebSocketConnection _socket = new ClintWebSocketConnection(m_ClientWebSocket, peer, log);
                     CurrentConnection = _socket;
+                    CurrentConnection.onMessage = (message) => OnMessage?.Invoke(message);
                     return _socket;
 
                 default:
@@ -75,7 +79,7 @@ namespace Client.Data.Websocket
             {
                 try
                 {
-                    byte[] buffer = new byte[1024];
+                    byte[] buffer = new byte[1024 * 24]; // 24KB buffer
 
                     while (isRunning)
                     {

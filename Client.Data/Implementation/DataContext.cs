@@ -1,4 +1,7 @@
-﻿using ClientServer.Shared.Data.API;
+﻿using Client.Data.Websocket;
+using ClientServer.Shared.Data.API;
+using Server.Presentation;
+using System.Xml.Serialization;
 
 namespace Client.Data.Implementation
 {
@@ -14,9 +17,44 @@ namespace Client.Data.Implementation
         public Dictionary<Guid, IInventory> Inventories => _inventories;
         public Dictionary<Guid, IOrder> Orders => _orders;
 
+        public event Action OnDataChanged = delegate { };
+
         public DataContext()
         {
+            WebSocketClient.OnMessage += WebSocketClient_OnMessage;
+        }
 
+        private void WebSocketClient_OnMessage(string obj)
+        {
+            Console.WriteLine("[SERVER]");
+            // await CurrentConnection.SendAsync("ITEMS|" + xml);
+            Console.WriteLine(obj);
+            switch (obj.Split('|')[0])
+            {
+                case "ITEMS":
+                    SyncItems(obj.Split('|')[1]);
+                    break;
+                default:
+                    Console.WriteLine("Unknown message type");
+                    break;
+            }
+        }
+
+        private void SyncItems(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableItem>));
+            using (StringReader reader = new StringReader(xml))
+            {
+                _items.Clear();
+
+                List<SerializableItem> items = (List<SerializableItem>)serializer.Deserialize(reader)!;
+                foreach (var item in items)
+                {
+                    _items[item.Id] = new Item(item.Id, item.Name, item.Price, item.MaintenanceCost);
+                }
+            }
+
+            //WebSocketConnection.onDataArrived.Invoke();
         }
     }
 }

@@ -31,12 +31,23 @@ namespace Client.Logic.Implementation
 
                 return await Task.FromResult(false);
             }
-
         }
 
         public async Task Disconnect()
         {
             await WebSocketClient.Disconnect();
+        }
+
+        public async Task FetchItems()
+        {
+            if (WebSocketClient.CurrentConnection != null)
+            {
+                await WebSocketClient.CurrentConnection.SendAsync("GET /items");
+            }
+            else
+            {
+                ConnectionLogger?.Invoke("No connection to server.");
+            }
         }
     }
 }
