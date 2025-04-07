@@ -1,8 +1,9 @@
-﻿using Presentation.Model.API;
+﻿using Client.Presentation.ViewModel.MVVMLight;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using Client.Presentation.Model.API;
 
-namespace Presentation.ViewModel
+namespace Client.Presentation.ViewModel
 {
     public class MainViewModel : ViewModelBase, IDisposable
     {

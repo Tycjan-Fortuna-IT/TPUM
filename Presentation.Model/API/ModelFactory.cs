@@ -1,7 +1,7 @@
 ﻿using Logic.API;
-using Presentation.Model.Implementation;
+using Client.Presentation.Model.Implementation;
 
-namespace Presentation.Model.API
+namespace Client.Presentation.Model.API
 {
     public abstract class ModelFactory
     {

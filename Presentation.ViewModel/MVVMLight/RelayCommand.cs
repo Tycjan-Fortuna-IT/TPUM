@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input; // Core ICommand interface (usually from System.ObjectModel or System.Windows.Input contract)
 
-namespace Presentation.ViewModel
+namespace Client.Presentation.ViewModel.MVVMLight
 {
     // A command whose sole purpose is to relay its functionality
     // to other objects by invoking delegates.

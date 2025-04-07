@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Presentation.ViewModel
+namespace Client.Presentation.ViewModel.MVVMLight
 {
     // Base class for all ViewModels implementing INotifyPropertyChanged
     public abstract class ViewModelBase : INotifyPropertyChanged

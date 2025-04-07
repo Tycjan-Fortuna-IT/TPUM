@@ -1,7 +1,7 @@
-﻿using Presentation.Model.API;
-using Logic.API;
+﻿using Logic.API;
+using Client.Presentation.Model.API;
 
-namespace Presentation.Model.Implementation
+namespace Client.Presentation.Model.Implementation
 {
     internal class HeroModel : IHeroModel
     {

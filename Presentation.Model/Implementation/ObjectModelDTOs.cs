@@ -1,6 +1,7 @@
-﻿using Logic.API;
+﻿using Client.Presentation.Model.API;
+using Logic.API;
 
-namespace Presentation.Model.Implementation.Mapper
+namespace Client.Presentation.Model.Implementation
 {
     // Item DTO
     internal class TransientItemDTO : IItemDataTransferObject
@@ -17,7 +18,7 @@ namespace Presentation.Model.Implementation.Mapper
             Price = price;
             MaintenanceCost = maintenanceCost;
         }
-        public TransientItemDTO(API.IItemModel model)
+        public TransientItemDTO(IItemModel model)
             : this(model.Id, model.Name, model.Price, model.MaintenanceCost) { }
     }
 
@@ -34,7 +35,7 @@ namespace Presentation.Model.Implementation.Mapper
             Capacity = capacity;
             Items = items?.ToList() ?? new List<IItemDataTransferObject>();
         }
-        public TransientInventoryDTO(API.IInventoryModel model)
+        public TransientInventoryDTO(IInventoryModel model)
            : this(model.Id, model.Capacity, model.Items.Select(i => new TransientItemDTO(i))) { }
     }
 
@@ -53,7 +54,7 @@ namespace Presentation.Model.Implementation.Mapper
             Gold = gold;
             Inventory = inventory;
         }
-        public TransientHeroDTO(API.IHeroModel model)
+        public TransientHeroDTO(IHeroModel model)
              : this(model.Id, model.Name, model.Gold, new TransientInventoryDTO(model.Inventory)) { }
     }
 
@@ -70,7 +71,7 @@ namespace Presentation.Model.Implementation.Mapper
             Buyer = buyer;
             ItemsToBuy = itemsToBuy?.ToList() ?? new List<IItemDataTransferObject>();
         }
-        public TransientOrderDTO(API.IOrderModel model)
+        public TransientOrderDTO(IOrderModel model)
             : this(model.Id, new TransientHeroDTO(model.Buyer), model.ItemsToBuy.Select(i => new TransientItemDTO(i))) { }
     }
 }

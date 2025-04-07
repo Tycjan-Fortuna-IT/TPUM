@@ -1,4 +1,4 @@
-﻿using Presentation.Model.API;
+﻿using Client.Presentation.Model.API;
 
 namespace Presentation.Model.Tests
 {

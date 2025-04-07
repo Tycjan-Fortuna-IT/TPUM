@@ -1,7 +1,7 @@
-﻿using Logic.API;
-using Presentation.Model.API;
+﻿using Client.Presentation.Model.API;
+using Logic.API;
 
-namespace Presentation.Model.Implementation
+namespace Client.Presentation.Model.Implementation
 {
     internal class OrderModel : IOrderModel
     {

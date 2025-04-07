@@ -1,8 +1,7 @@
-﻿using Presentation.Model.API;
-using Logic.API;
-using System;
+﻿using Logic.API;
+using Client.Presentation.Model.API;
 
-namespace Presentation.Model.Implementation
+namespace Client.Presentation.Model.Implementation
 {
     internal class ItemModel : IItemModel
     {

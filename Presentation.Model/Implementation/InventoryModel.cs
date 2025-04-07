@@ -1,9 +1,9 @@
-﻿using Presentation.Model.API;
-using Logic.API;
+﻿using Logic.API;
 using System;
 using System.Collections.Generic;
+using Client.Presentation.Model.API;
 
-namespace Presentation.Model.Implementation
+namespace Client.Presentation.Model.Implementation
 {
     internal class InventoryModel : IInventoryModel
     {

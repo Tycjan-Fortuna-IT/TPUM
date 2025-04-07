@@ -1,8 +1,8 @@
-﻿using Presentation.ViewModel; // Need access to MainViewModel
+﻿using Client.Presentation.ViewModel;
 using System.Diagnostics;
 using System.Windows;
 
-namespace Presentation.View
+namespace Client.Presentation.View
 {
     public partial class MainWindow : Window
     {

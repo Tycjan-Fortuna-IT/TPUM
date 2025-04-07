@@ -1,6 +1,6 @@
-﻿using Presentation.Model.API;
+﻿using Client.Presentation.Model.API;
 
-namespace Presentation.ViewModel
+namespace Client.Presentation.ViewModel
 {
     public interface IHeroMaintenanceService : IDisposable
     {
