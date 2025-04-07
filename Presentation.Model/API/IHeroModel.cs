@@ -1,5 +1,4 @@
-﻿
-namespace Client.Presentation.Model.API
+﻿namespace Client.Presentation.Model.API
 {
     public interface IHeroModel
     {

@@ -1,5 +1,6 @@
-﻿using Logic.API;
+﻿using Client.Logic.API;
 using Client.Presentation.Model.Implementation;
+using Shared.Logic.API;
 
 namespace Client.Presentation.Model.API
 {

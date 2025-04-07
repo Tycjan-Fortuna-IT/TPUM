@@ -1,4 +1,4 @@
-﻿namespace Shared
+﻿namespace Shared.Data.API
 {
     public abstract class WebSocketConnection
     {
