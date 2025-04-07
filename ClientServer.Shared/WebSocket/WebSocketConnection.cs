@@ -1,4 +1,4 @@
-﻿namespace ClientServer.Shared.Data.API
+﻿namespace ClientServer.Shared.WebSocket
 {
     public abstract class WebSocketConnection
     {
