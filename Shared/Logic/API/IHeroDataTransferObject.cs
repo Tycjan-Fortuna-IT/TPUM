@@ -1,4 +1,4 @@
-﻿namespace Shared.Logic.API
+﻿namespace ClientServer.Shared.Logic.API
 {
     public interface IHeroDataTransferObject
     {

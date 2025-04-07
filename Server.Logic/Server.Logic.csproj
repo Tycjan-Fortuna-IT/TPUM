@@ -8,7 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
-    <ProjectReference Include="..\Shared\Shared.csproj" />
+    <ProjectReference Include="..\Shared\ClientServer.Shared.csproj" />
   </ItemGroup>
 
 </Project>

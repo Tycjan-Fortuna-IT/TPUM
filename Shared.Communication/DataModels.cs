@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
-namespace Shared.DataModels
+namespace ClientServer.Shared.DataModels
 {
     // Podstawowe modele danych - uproszczone wersje interfejsów
     // Atrybuty Xml... mogą być potrzebne do dostosowania serializacji

@@ -1,7 +1,7 @@
 ﻿using Client.Data.API;
 using Client.Logic.Implementation;
-using Shared.Data.API;
-using Shared.Logic.API;
+using ClientServer.Shared.Data.API;
+using ClientServer.Shared.Logic.API;
 
 namespace Client.Logic.API
 {

@@ -1,4 +1,4 @@
-﻿using Shared.Data.API;
+﻿using ClientServer.Shared.Data.API;
 
 namespace Server.Data.Implementation
 {

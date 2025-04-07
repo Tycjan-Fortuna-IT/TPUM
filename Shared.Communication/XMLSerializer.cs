@@ -2,9 +2,9 @@
 using System.IO;
 using System.Text;
 using System.Xml.Serialization;
-using Shared.DataModels; // Ważne, aby serializer znał typy z DataModels
+using ClientServer.Shared.DataModels; // Ważne, aby serializer znał typy z DataModels
 
-namespace Shared.Communication
+namespace ClientServer.Shared.Communication
 {
     public static class XmlSerializationHelper
     {

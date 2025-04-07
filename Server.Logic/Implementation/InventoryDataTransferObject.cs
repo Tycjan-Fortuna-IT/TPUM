@@ -1,4 +1,4 @@
-﻿using Shared.Logic.API;
+﻿using ClientServer.Shared.Logic.API;
 
 namespace Server.Logic.Implementation
 {
