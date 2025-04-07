@@ -7,6 +7,8 @@ namespace Client.Logic.API
 {
     public abstract class LogicFactory : ILogicFactory
     {
+        private static IDataRepository _repository = DataRepositoryFactory.CreateDataRepository();
+
         public static IHeroLogic CreateHeroLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
             return new HeroLogic(dataRepository ?? _repository);
@@ -27,6 +29,14 @@ namespace Client.Logic.API
             return new OrderLogic(dataRepository ?? _repository);
         }
 
-        private static IDataRepository _repository = DataRepositoryFactory.CreateDataRepository();
+        public static IConnectionService CreateConnectionService(IConnectionService? service = default(IConnectionService), Action? onDataChanged = null)
+        {
+            IConnectionService connectionService = service ?? new ClientConnectionService();
+
+            if (onDataChanged != null)
+                _repository.OnDataChanged += onDataChanged;
+
+            return connectionService;
+        }
     }
 }

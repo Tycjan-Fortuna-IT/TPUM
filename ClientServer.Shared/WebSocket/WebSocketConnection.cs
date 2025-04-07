@@ -5,7 +5,6 @@
         public virtual Action<string> onMessage { set; protected get; } = x => { };
         public virtual Action onClose { set; protected get; } = () => { };
         public virtual Action onError { set; protected get; } = () => { };
-        public virtual Action onDataArrived { set; get; } = () => { };
 
 
         public async Task SendAsync(string message)

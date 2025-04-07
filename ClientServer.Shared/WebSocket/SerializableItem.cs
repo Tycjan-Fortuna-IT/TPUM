@@ -1,17 +1,7 @@
-﻿using ClientServer.Shared.Logic.API;
-
-namespace Server.Presentation
+﻿namespace Server.Presentation
 {
-    public interface ISerializableItem
-    {
-        Guid Id { get; set; }
-        string Name { get; set; }
-        int Price { get; set; }
-        int MaintenanceCost { get; set; }
-    }
-
     [Serializable]
-    public class SerializableItem : ISerializableItem
+    public class SerializableItem
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

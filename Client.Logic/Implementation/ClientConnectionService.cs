@@ -8,6 +8,8 @@ namespace Client.Logic.Implementation
     {
         public Action<string> ConnectionLogger { get => _logger; set => _logger = value; }
 
+        public Action? onDataArrived { set; get; }
+
         private Action<string> _logger = (string message) =>
         {
             Console.WriteLine(message);
@@ -43,6 +45,30 @@ namespace Client.Logic.Implementation
             if (WebSocketClient.CurrentConnection != null)
             {
                 await WebSocketClient.CurrentConnection.SendAsync("GET /items");
+            }
+            else
+            {
+                ConnectionLogger?.Invoke("No connection to server.");
+            }
+        }
+
+        public async Task FetchInventories()
+        {
+            if (WebSocketClient.CurrentConnection != null)
+            {
+                await WebSocketClient.CurrentConnection.SendAsync("GET /inventories");
+            }
+            else
+            {
+                ConnectionLogger?.Invoke("No connection to server.");
+            }
+        }
+
+        public async Task FetchHeroes()
+        {
+            if (WebSocketClient.CurrentConnection != null)
+            {
+                await WebSocketClient.CurrentConnection.SendAsync("GET /heroes");
             }
             else
             {

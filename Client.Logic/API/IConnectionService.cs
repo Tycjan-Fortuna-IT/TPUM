@@ -5,6 +5,10 @@
         public Task<bool> Connect(Uri peerUri);
         public Task Disconnect();
 
+        public Action? onDataArrived { set; get; }
+
         public Task FetchItems();
+        public Task FetchInventories();
+        public Task FetchHeroes();
     }
 }

@@ -11,6 +11,8 @@ namespace Server.Data.Implementation
         private readonly object _itemsLock = new object();
         private readonly object _ordersLock = new object();
 
+        public event Action OnDataChanged = delegate { };
+
         public DataRepository(IDataContext context)
         {
             this._context = context;

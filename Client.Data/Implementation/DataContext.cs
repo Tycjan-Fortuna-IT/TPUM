@@ -1,5 +1,6 @@
 ﻿using Client.Data.Websocket;
 using ClientServer.Shared.Data.API;
+using ClientServer.Shared.WebSocket;
 using Server.Presentation;
 using System.Xml.Serialization;
 
@@ -34,10 +35,18 @@ namespace Client.Data.Implementation
                 case "ITEMS":
                     SyncItems(obj.Split('|')[1]);
                     break;
+                case "HEROES":
+                    SyncHeroes(obj.Split('|')[1]);
+                    break;
+                case "INVENTORIES":
+                    SyncInventories(obj.Split('|')[1]);
+                    break;
                 default:
                     Console.WriteLine("Unknown message type");
-                    break;
+                    return;
             }
+
+            OnDataChanged.Invoke();
         }
 
         private void SyncItems(string xml)
@@ -53,8 +62,50 @@ namespace Client.Data.Implementation
                     _items[item.Id] = new Item(item.Id, item.Name, item.Price, item.MaintenanceCost);
                 }
             }
+        }
 
-            //WebSocketConnection.onDataArrived.Invoke();
+        private void SyncHeroes(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableHero>));
+            using (StringReader reader = new StringReader(xml))
+            {
+                _heroes.Clear();
+
+                List<SerializableHero> heroes = (List<SerializableHero>)serializer.Deserialize(reader)!;
+                foreach (var hero in heroes)
+                {
+                    List<IItem> items = new List<IItem>();
+                    foreach (var item in hero.Inventory.Items)
+                    {
+                        items.Add(new Item(item.Id, item.Name, item.Price, item.MaintenanceCost));
+                    }
+
+                    IInventory inv = new Inventory(hero.Inventory.Id, hero.Inventory.Capacity, items);
+                    _heroes[hero.Id] = new Hero(hero.Id, hero.Name, hero.Gold, inv);
+                    _inventories[inv.Id] = inv;
+                }
+            }
+        }
+
+        private void SyncInventories(string xml)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableInventory>));
+            using (StringReader reader = new StringReader(xml))
+            {
+                _inventories.Clear();
+
+                List<SerializableInventory> inventories = (List<SerializableInventory>)serializer.Deserialize(reader)!;
+                foreach (var inv in inventories)
+                {
+                    List<IItem> items = new List<IItem>();
+                    foreach (var item in inv.Items)
+                    {
+                        items.Add(new Item(item.Id, item.Name, item.Price, item.MaintenanceCost));
+                    }
+
+                    _inventories[inv.Id] = new Inventory(inv.Id, inv.Capacity, items);
+                }
+            }
         }
     }
 }

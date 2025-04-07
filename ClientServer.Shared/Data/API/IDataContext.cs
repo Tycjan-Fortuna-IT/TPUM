@@ -9,5 +9,7 @@
         public abstract Dictionary<Guid, IInventory> Inventories { get; }
 
         public abstract Dictionary<Guid, IOrder> Orders { get; }
+
+        public abstract event Action OnDataChanged;
     }
 }

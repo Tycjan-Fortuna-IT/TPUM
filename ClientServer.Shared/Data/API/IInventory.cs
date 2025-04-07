@@ -4,6 +4,6 @@
     {
         public abstract int Capacity { get; }
 
-        public abstract IEnumerable<IItem> Items { get; }
+        public abstract List<IItem> Items { get; }
     }
 }

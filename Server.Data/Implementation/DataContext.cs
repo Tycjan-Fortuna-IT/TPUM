@@ -14,10 +14,14 @@ namespace Server.Data.Implementation
         public Dictionary<Guid, IInventory> Inventories => _inventories;
         public Dictionary<Guid, IOrder> Orders => _orders;
 
+        public event Action OnDataChanged = delegate { };
+
         public DataContext()
         {
+            Inventory inv1 = new Inventory(30);
+
             Guid hero1Guid = Guid.NewGuid();
-            _heroes.Add(hero1Guid, new Hero(hero1Guid, "Arthas the Fallen", 3000.0f, new Inventory(30)));
+            _heroes.Add(hero1Guid, new Hero(hero1Guid, "Arthas the Fallen", 3000.0f, inv1));
 
             Guid hero2Guid = Guid.NewGuid();
             _heroes.Add(hero2Guid, new Hero(hero2Guid, "Lyra the Shadowblade", 2200.0f, new Inventory(20)));
@@ -44,7 +48,10 @@ namespace Server.Data.Implementation
             _items.Add(item5Guid, new Item(item5Guid, "Potion of Immortality", 500, 0));
 
             Guid item6Guid = Guid.NewGuid();
-            _items.Add(item6Guid, new Item(item6Guid, "Bow of the Stormcaller", 200, 40));
+            Item item1 = new Item(item6Guid, "Bow of the Stormcaller", 200, 40);
+            _items.Add(item6Guid, item1);
+
+            inv1.Items.Add(item1);
         }
     }
 }

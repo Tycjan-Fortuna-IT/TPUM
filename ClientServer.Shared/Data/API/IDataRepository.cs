@@ -29,5 +29,7 @@
         public abstract bool RemoveOrderById(Guid id);
         public abstract bool RemoveOrder(IOrder order);
         public abstract bool UpdateOrder(Guid id, IOrder order);
+
+        public abstract event Action OnDataChanged;
     }
 }

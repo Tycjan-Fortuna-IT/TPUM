@@ -7,7 +7,7 @@ namespace Server.Logic.Implementation
     {
         public Guid Id { get; } = Guid.Empty;
         public int Capacity { get; }
-        public IEnumerable<IItem> Items { get; }
+        public List<IItem> Items { get; }
 
         public MappedDataInventory(IInventoryDataTransferObject inventoryData)
         {

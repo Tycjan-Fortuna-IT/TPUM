@@ -6,7 +6,7 @@ namespace Server.Data.Implementation
     {
         public Guid Id { get; } = Guid.Empty;
         public int Capacity { get; }
-        public IEnumerable<IItem> Items { get; }
+        public List<IItem> Items { get; }
 
         public Inventory(int capacity)
         {

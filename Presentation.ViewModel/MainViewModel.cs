@@ -107,7 +107,10 @@ namespace Client.Presentation.ViewModel
             ConnectToServerCommand = new RelayCommand(ExecuteConnectToServer, CanConnectToServer);
             DisconnectFromServerCommand = new RelayCommand(ExecuteDisconnectFromServer, CanDisconnectFromServer);
 
-            _connectionService = ConnectionServiceFactory.CreateConnectionService();
+            _connectionService = LogicFactory.CreateConnectionService(null, () =>
+            {
+                _ = LoadInitialDataAsync();
+            });
 
             Task.Run(async () =>
             {
@@ -117,15 +120,11 @@ namespace Client.Presentation.ViewModel
                 // run after 2s to give time to connect
                 await Task.Delay(2000).ContinueWith(async _ =>
                 {
+                    await _connectionService.FetchHeroes();
                     await _connectionService.FetchItems();
-
-                    await Task.Delay(2000).ContinueWith(_ =>
-                    {
-                        _ = LoadInitialDataAsync();
-                    });
+                    await _connectionService.FetchInventories();
                 });
             });
-
 
             _syncContext = SynchronizationContext.Current;
             if (_syncContext == null)

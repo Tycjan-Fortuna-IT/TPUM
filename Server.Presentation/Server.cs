@@ -54,6 +54,45 @@ namespace Server.Presentation
                 // Send the xml to the client
                 await CurrentConnection.SendAsync("ITEMS|" + xml);
             }
+            else if (message.Contains("GET /heroes"))
+            {
+                IEnumerable<IHeroDataTransferObject> heroes = _heroLogic.GetAll();
+                List<SerializableHero> heroesToSerialize = heroes.Select(hero =>
+                    new SerializableHero(hero.Id, hero.Name, hero.Gold,
+                        new SerializableInventory(hero.Inventory.Id, hero.Inventory.Capacity,
+                        hero.Inventory.Items.Select(item => new SerializableItem(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
+                    )).ToList();
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableHero>));
+                string xml;
+                using (StringWriter writer = new StringWriter())
+                {
+                    serializer.Serialize(writer, heroesToSerialize);
+                    xml = writer.ToString();
+                }
+
+                // Send the xml to the client
+                await CurrentConnection.SendAsync("HEROES|" + xml);
+            }
+            else if (message.Contains("GET /inventories"))
+            {
+                IEnumerable<IInventoryDataTransferObject> inves = _inventoryLogic.GetAll();
+                List<SerializableInventory> inventoriesToSerialize = inves.Select(inv =>
+                    new SerializableInventory(inv.Id, inv.Capacity,
+                        inv.Items.Select(item => new SerializableItem(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
+                    ).ToList();
+
+                XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableInventory>));
+                string xml;
+                using (StringWriter writer = new StringWriter())
+                {
+                    serializer.Serialize(writer, inventoriesToSerialize);
+                    xml = writer.ToString();
+                }
+
+                // Send the xml to the client
+                await CurrentConnection.SendAsync("INVENTORIES|" + xml);
+            }
         }
 
     }
