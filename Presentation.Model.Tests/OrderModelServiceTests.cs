@@ -1,9 +1,8 @@
-﻿//using Presentation.Model.Implementation;
-using Client.Presentation.Model.API;
-using Logic.API;
+﻿using Client.Presentation.Model.API;
+using ClientServer.Shared.Logic.API;
 
 
-namespace Presentation.Model.Tests
+namespace Client.Presentation.Model.Tests
 {
     [TestClass]
     public class OrderModelServiceTests

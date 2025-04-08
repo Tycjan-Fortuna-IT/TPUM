@@ -1,6 +1,6 @@
 ﻿using Client.Presentation.Model.API;
 
-namespace Presentation.Model.Tests.Dummies
+namespace Client.Presentation.Model.Tests
 {
     // Dummy Item Model
     internal class DummyItemModel : IItemModel

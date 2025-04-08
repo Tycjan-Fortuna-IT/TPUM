@@ -1,8 +1,6 @@
 ﻿using Client.Presentation.Model.API;
-using Client.Presentation.ViewModel;
-using Presentation.Model.Tests;
 
-namespace Presentation.ViewModel.Tests
+namespace Client.Presentation.ViewModel.Tests
 {
     [TestClass]
     public sealed class MainViewModelTests

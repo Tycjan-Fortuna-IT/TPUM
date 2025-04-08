@@ -1,7 +1,6 @@
-﻿
-using Logic.API;
+﻿using ClientServer.Shared.Logic.API;
 
-namespace Presentation.Model.Tests
+namespace Client.Presentation.Model.Tests
 {
     // Dummy implementation of IHeroLogic
     internal class DummyHeroLogic : IHeroLogic

@@ -1,6 +1,6 @@
-﻿using Logic.API;
+﻿using ClientServer.Shared.Logic.API;
 
-namespace Logic.Tests
+namespace Server.Logic.Tests
 {
     internal class DummyInventoryDataTransferObject : IInventoryDataTransferObject
     {

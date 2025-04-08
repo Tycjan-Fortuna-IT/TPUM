@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
+    <ProjectReference Include="..\ClientServer.Shared\ClientServer.Shared.csproj" />
+    <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
   </ItemGroup>
 
   <ItemGroup>

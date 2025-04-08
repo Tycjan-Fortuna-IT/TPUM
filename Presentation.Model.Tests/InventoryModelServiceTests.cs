@@ -1,7 +1,7 @@
 ﻿using Client.Presentation.Model.API;
-using Logic.API;
+using ClientServer.Shared.Logic.API;
 
-namespace Presentation.Model.Tests
+namespace Client.Presentation.Model.Tests
 {
     [TestClass]
     public class InventoryModelServiceTests

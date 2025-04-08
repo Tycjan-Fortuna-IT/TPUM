@@ -1,5 +1,6 @@
 ﻿using Client.Presentation.Model.API;
-using Logic.API;
+using Client.Presentation.Model.Tests;
+using ClientServer.Shared.Logic.API;
 
 namespace Presentation.Model.Tests
 {

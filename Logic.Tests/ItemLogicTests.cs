@@ -1,6 +1,7 @@
-﻿using Logic.API;
+﻿using ClientServer.Shared.Logic.API;
+using Server.Logic.API;
 
-namespace Logic.Tests
+namespace Server.Logic.Tests
 {
     [TestClass]
     public class ItemLogicTests

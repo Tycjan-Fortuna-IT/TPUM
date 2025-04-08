@@ -1,6 +1,6 @@
 ﻿using Client.Presentation.Model.API;
 
-namespace Presentation.Model.Tests
+namespace Client.Presentation.ViewModel.Tests
 {
     internal class DummyHeroModel : IHeroModel
     {

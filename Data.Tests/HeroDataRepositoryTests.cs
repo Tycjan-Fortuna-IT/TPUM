@@ -1,6 +1,7 @@
-﻿using Data.API;
+﻿using ClientServer.Shared.Data.API;
+using Server.Data.API;
 
-namespace Data.Tests
+namespace Server.Data.Tests
 {
     [TestClass]
     public class HeroDataRepositoryTests

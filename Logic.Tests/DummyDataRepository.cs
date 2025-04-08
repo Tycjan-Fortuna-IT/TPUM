@@ -1,6 +1,6 @@
-﻿using Data.API;
+﻿using ClientServer.Shared.Data.API;
 
-namespace Logic.Tests
+namespace Server.Logic.Tests
 {
     internal class DummyDataRepository : IDataRepository
     {
@@ -13,6 +13,8 @@ namespace Logic.Tests
         private readonly object _inventoryLock = new object();
         private readonly object _itemsLock = new object();
         private readonly object _ordersLock = new object();
+
+        public event Action OnDataChanged = delegate { };
 
         public IEnumerable<IHero> GetAllHeroes()
         {

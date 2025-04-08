@@ -1,6 +1,6 @@
-﻿using Data.API;
+﻿using ClientServer.Shared.Data.API;
 
-namespace Data.Tests
+namespace Server.Data.Tests
 {
     internal class DummyHero : IHero
     {
