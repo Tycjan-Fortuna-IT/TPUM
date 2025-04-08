@@ -1,9 +1,9 @@
-﻿using ClientServer.Shared.Data.API;
+﻿using Client.Logic.API;
+using Client.Logic.Implementation;
 using ClientServer.Shared.Logic.API;
-using Server.Logic.Implementation;
-using Server.Logic.API;
+using ClientServer.Shared.Data.API;
 
-namespace Server.Logic.Tests
+namespace Client.Logic.Tests
 {
     [TestClass]
     public class HeroLogicTests
@@ -39,6 +39,7 @@ namespace Server.Logic.Tests
             public float Gold { get; set; } = 100f;
             public IInventory Inventory { get; set; } = new TestInventory();
         }
+
 
         [TestMethod]
         public void Map_ShouldCorrectlyMapLocalHeroImplementationToDto()
@@ -195,6 +196,47 @@ namespace Server.Logic.Tests
             bool result = _logic.Update(heroId, updatedHero);
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void PeriodicItemMaintenanceDeduction_ShouldDecreaseGoldForAllHeroesBasedOnItems()
+        {
+            var itemDto1_1 = new DummyItemDataTransferObject(Guid.NewGuid(), "Sword", 100, 10);
+            var itemDto1_2 = new DummyItemDataTransferObject(Guid.NewGuid(), "Shield", 80, 5);
+            var invDto1 = new DummyInventoryDataTransferObject(Guid.NewGuid(), 10, new List<IItemDataTransferObject> { itemDto1_1, itemDto1_2 });
+            float initialGold1 = 200f;
+            var heroDto1 = new DummyHeroDataTransferObject(Guid.NewGuid(), "HeroWithItems", initialGold1, invDto1);
+            float expectedGold1 = initialGold1 - itemDto1_1.MaintenanceCost - itemDto1_2.MaintenanceCost;
+
+            var invDto2 = new DummyInventoryDataTransferObject(Guid.NewGuid(), 5, new List<IItemDataTransferObject>());
+            float initialGold2 = 300f;
+            var heroDto2 = new DummyHeroDataTransferObject(Guid.NewGuid(), "HeroWithoutItems", initialGold2, invDto2);
+            float expectedGold2 = initialGold2;
+
+            var itemDto3_1 = new DummyItemDataTransferObject(Guid.NewGuid(), "Amulet", 500, 20);
+            var invDto3 = new DummyInventoryDataTransferObject(Guid.NewGuid(), 2, new List<IItemDataTransferObject> { itemDto3_1 });
+            float initialGold3 = 50f;
+            var heroDto3 = new DummyHeroDataTransferObject(Guid.NewGuid(), "HeroPoor", initialGold3, invDto3);
+            float expectedGold3 = initialGold3 - itemDto3_1.MaintenanceCost; // 50 - 20
+
+            _logic.Add(heroDto1);
+            _logic.Add(heroDto2);
+            _logic.Add(heroDto3);
+
+            _logic.PeriodicItemMaintenanceDeduction();
+
+            var resultHero1 = _logic.Get(heroDto1.Id);
+            var resultHero2 = _logic.Get(heroDto2.Id);
+            var resultHero3 = _logic.Get(heroDto3.Id);
+
+            Assert.IsNotNull(resultHero1);
+            Assert.AreEqual(expectedGold1, resultHero1.Gold, 0.001f, "Hero1 gold mismatch after deduction.");
+
+            Assert.IsNotNull(resultHero2);
+            Assert.AreEqual(expectedGold2, resultHero2.Gold, 0.001f, "Hero2 gold should not have changed.");
+
+            Assert.IsNotNull(resultHero3);
+            Assert.AreEqual(expectedGold3, resultHero3.Gold, 0.001f, "Hero3 gold mismatch after deduction.");
         }
     }
 }

@@ -1,7 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Client.Data.Implementation;
-using Client.Data.API; // Potrzebne dla IDataContext
-using System;
+﻿using Client.Data.API;
 using ClientServer.Shared.Data.API;
 
 namespace Client.Data.Tests

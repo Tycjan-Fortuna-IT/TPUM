@@ -1,9 +1,9 @@
 ﻿using ClientServer.Shared.Data.API;
 using ClientServer.Shared.Logic.API;
-using Server.Logic.API;
-using Server.Logic.Implementation;
+using Client.Logic.API;
+using Client.Logic.Implementation;
 
-namespace Server.Logic.Tests
+namespace Client.Logic.Tests
 {
     [TestClass]
     public class OrderLogicTests
