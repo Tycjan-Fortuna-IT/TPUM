@@ -1,12 +1,10 @@
 ﻿using ClientServer.Shared.Data.API;
-using Server.Data.API;
 
-namespace Server.Data.Tests
+namespace Client.Data.Tests
 {
     [TestClass]
-    public class HeroDataRepositoryTests : DataRepositoryTestBase
+    public class HeroDataRepositoryTests : DataRepositoryTestBase // Dziedziczymy
     {
-
         [TestMethod]
         public void Add_ShouldAddHeroToRepository()
         {

@@ -1,7 +1,10 @@
-﻿using Server.Data.API;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Client.Data.API;
+using System;
+using System.Linq;
 using ClientServer.Shared.Data.API;
 
-namespace Server.Data.Tests
+namespace Client.Data.Tests
 {
     [TestClass]
     public class ItemDataRepositoryTests : DataRepositoryTestBase

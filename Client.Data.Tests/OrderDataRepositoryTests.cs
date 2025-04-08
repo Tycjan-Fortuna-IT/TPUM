@@ -1,7 +1,6 @@
-﻿using Server.Data.API;
-using ClientServer.Shared.Data.API;
+﻿using ClientServer.Shared.Data.API;
 
-namespace Server.Data.Tests
+namespace Client.Data.Tests
 {
     [TestClass]
     public class OrderDataRepositoryTests : DataRepositoryTestBase
