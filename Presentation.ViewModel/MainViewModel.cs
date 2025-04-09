@@ -107,7 +107,11 @@ namespace Client.Presentation.ViewModel
             ConnectToServerCommand = new RelayCommand(ExecuteConnectToServer, CanConnectToServer);
             DisconnectFromServerCommand = new RelayCommand(ExecuteDisconnectFromServer, CanDisconnectFromServer);
 
-            _connectionService = LogicFactory.CreateConnectionService(null, () =>
+            _heroService = heroService ?? throw new ArgumentNullException(nameof(heroService));
+            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
+            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
+
+            _connectionService = LogicFactory.CreateConnectionService(null, async () =>
             {
                 _ = LoadInitialDataAsync();
             });
@@ -115,7 +119,7 @@ namespace Client.Presentation.ViewModel
             Task.Run(async () =>
             {
                 IsConnected = true;
-                await _connectionService.Connect(new Uri("ws://localhost:8081/ws"));
+                await _connectionService.Connect(new Uri("ws://localhost:9081/ws"));
 
                 // run after 2s to give time to connect
                 await Task.Delay(2000).ContinueWith(async _ =>
@@ -131,10 +135,6 @@ namespace Client.Presentation.ViewModel
             {
                 Debug.WriteLine("Warning: MainViewModel created outside of WPF project");
             }
-
-            _heroService = heroService ?? throw new ArgumentNullException(nameof(heroService));
-            _itemService = itemService ?? throw new ArgumentNullException(nameof(itemService));
-            _orderService = orderService ?? throw new ArgumentNullException(nameof(orderService));
 
             // Create the maintenance service
             _maintenanceService = new HeroMaintenanceService(
@@ -294,7 +294,7 @@ namespace Client.Presentation.ViewModel
 
             Task.Run(async () =>
             {
-                await _connectionService.Connect(new Uri("ws://localhost:8081/ws"));
+                await _connectionService.Connect(new Uri("ws://localhost:9081/ws"));
             });
         }
 
@@ -334,42 +334,6 @@ namespace Client.Presentation.ViewModel
             Debug.WriteLine($"Attempting purchase for {buyer.Name}, Item {itemToBuy.Name}");
 
             await _connectionService.CreateOrder(Guid.NewGuid(), buyer.Id, [itemToBuy.Id]);
-            //try
-            //{
-            //    Guid orderId = Guid.NewGuid();
-            //    List<Guid> itemIds = new List<Guid> { itemToBuy.Id };
-
-            //    await Task.Run(() => _orderService.AddOrder(orderId, buyer.Id, itemIds));
-            //    await Task.Run(() => _orderService.TriggerPeriodicOrderProcessing());
-            //    Debug.WriteLine($"Order processing on.");
-
-            //    Func<Task> refreshAction = async () =>
-            //    {
-            //        await RefreshOrdersAsync();
-            //        if (SelectedHero != null && SelectedHero.Id == buyer.Id)
-            //        {
-            //            await RefreshSelectedHeroDataAsync();
-            //        }
-            //    };
-
-            //    if (_syncContext != null)
-            //    {
-            //        _syncContext.Post(async _ => await refreshAction(), null);
-            //    }
-            //    else
-            //    {
-            //        // Execute directly if no context
-            //        await refreshAction();
-            //    }
-
-
-            //    await LoadShopItemsAsync();
-            //}
-            //catch (Exception ex)
-            //{
-            //    LogError($"while buying item for Hero {buyer.Name}", ex);
-            //    // maybe a UI callback should be made to say to the user that purchase failed
-            //}
         }
 
         #endregion
