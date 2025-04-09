@@ -29,8 +29,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServer.Shared", "Clie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Presentation", "Server.Presentation\Server.Presentation.csproj", "{C87AFB60-523D-4FC7-8CA4-4E9ABAFC142C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "todo", "todo", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Data.Tests", "Client.Data.Tests\Client.Data.Tests.csproj", "{A6D88136-2CCC-4A70-B286-4FC8A925A6EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Logic.Tests", "Client.Logic.Tests\Client.Logic.Tests.csproj", "{55FCC5D3-0C61-4813-B76A-108ACC789BF0}"
