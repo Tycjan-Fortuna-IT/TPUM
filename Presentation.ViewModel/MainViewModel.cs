@@ -14,7 +14,6 @@ namespace Client.Presentation.ViewModel
         private readonly IHeroModelService _heroService;
         private readonly IItemModelService _itemService;
         private readonly IOrderModelService _orderService;
-        private readonly IHeroMaintenanceService _maintenanceService;
         private readonly SynchronizationContext? _syncContext;
 
         private IHeroModel? _selectedHero;
@@ -135,16 +134,6 @@ namespace Client.Presentation.ViewModel
             {
                 Debug.WriteLine("Warning: MainViewModel created outside of WPF project");
             }
-
-            // Create the maintenance service
-            _maintenanceService = new HeroMaintenanceService(
-                _heroService,
-                GetSelectedHeroForMaintenance,
-                RefreshSelectedHeroDataAsync,
-                _syncContext);
-
-            // Start the background maintenance task
-            _maintenanceService.Start();
 
             Debug.WriteLine("MainViewModel creation complete.");
         }
@@ -354,7 +343,6 @@ namespace Client.Presentation.ViewModel
                 _connectionService.Disconnect().Wait();
 
             Debug.WriteLine("Disposing MainViewModel...");
-            _maintenanceService?.Dispose();
             GC.SuppressFinalize(this);
             Debug.WriteLine("MainViewModel disposed.");
         }

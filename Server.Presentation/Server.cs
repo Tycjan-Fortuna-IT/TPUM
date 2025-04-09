@@ -2,7 +2,6 @@
 using ClientServer.Shared.WebSocket;
 using Server.Logic.API;
 using System.Globalization;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Server.Presentation
@@ -14,14 +13,33 @@ namespace Server.Presentation
         private static IItemLogic _itemLogic = LogicFactory.CreateItemLogic();
         private static IOrderLogic _orderLogic = LogicFactory.CreateOrderLogic();
 
+        private static IMaintenanceTracker _maintenanceTracker = MaintenanceFactory.CreateTracker();
+        private static IMaintenanceReporter _maintenanceReporter = MaintenanceFactory.CreateReporter();
+
         private static WebSocketConnection CurrentConnection = null!;
+
+        private static Timer? _maintenanceTimer = null;
+        private static TimeSpan _interval = TimeSpan.FromSeconds(5);
 
         private static async Task Main(string[] args)
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            Console.WriteLine("[Server]: Starting WebSocket server on port 8081...");
-            await WebSocketServer.Server(8081, ConnectionHandler);
+            _maintenanceReporter.Subscribe(_maintenanceTracker, () => { }, (Exception e) => { }, (IHeroDataTransferObject next) =>
+            {
+                _heroLogic.DeduceMaintenanceCost(next);
+            });
+
+            Console.WriteLine($"Starting maintenance timer with interval {_interval.TotalSeconds}s.");
+            _maintenanceTimer = new Timer(
+                MaintenanceTick,
+                null,
+                _interval,
+                _interval
+            );
+
+            Console.WriteLine("[Server]: Starting WebSocket server on port 9081...");
+            await WebSocketServer.Server(9081, ConnectionHandler);
         }
 
         private static void ConnectionHandler(WebSocketConnection webSocketConnection)
@@ -153,6 +171,16 @@ namespace Server.Presentation
                 await SyncInventories();
             else if (message.Contains("POST /orders"))
                 await CreateOrder(message);
+        }
+
+        private static void MaintenanceTick(object? state)
+        {
+            foreach (IHeroDataTransferObject hero in _heroLogic.GetAll())
+            {
+                _maintenanceTracker.Track(hero);
+            }
+
+            Task.Run(async () => { await SynchronizeWithClients(); });
         }
     }
 

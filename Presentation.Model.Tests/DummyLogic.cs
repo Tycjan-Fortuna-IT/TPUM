@@ -30,6 +30,14 @@ namespace Client.Presentation.Model.Tests
             PeriodicDeductionCallCount++;
         }
 
+        public void DeduceMaintenanceCost(IHeroDataTransferObject hero)
+        {
+            foreach (IItemDataTransferObject item in hero.Inventory.Items)
+            {
+                hero.Gold -= item.MaintenanceCost;
+            }
+        }
+
         public bool Remove(IHeroDataTransferObject item)
         {
             if (item == null) return false;

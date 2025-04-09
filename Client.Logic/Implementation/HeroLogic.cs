@@ -90,5 +90,18 @@ namespace Client.Logic.Implementation
                 }
             }
         }
+
+        public void DeduceMaintenanceCost(IHeroDataTransferObject hero)
+        {
+            lock (_lock)
+            {
+                foreach (IItemDataTransferObject item in hero.Inventory.Items)
+                {
+                    hero.Gold -= item.MaintenanceCost;
+                }
+
+                _repository.UpdateHero(hero.Id, new MappedDataHero(hero));
+            }
+        }
     }
 }

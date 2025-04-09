@@ -27,9 +27,8 @@ namespace Client.Data.Implementation
 
         private void WebSocketClient_OnMessage(string obj)
         {
-            Console.WriteLine("[SERVER]");
-            // await CurrentConnection.SendAsync("ITEMS|" + xml);
-            Console.WriteLine(obj);
+            Console.WriteLine($"[SERVER] Got message about {obj.Split('|')[0]}");
+
             switch (obj.Split('|')[0])
             {
                 case "ITEMS":

@@ -15,5 +15,7 @@
         public abstract bool Update(Guid id, IHeroDataTransferObject item);
 
         public abstract void PeriodicItemMaintenanceDeduction();
+
+        public abstract void DeduceMaintenanceCost(IHeroDataTransferObject hero);
     }
 }
