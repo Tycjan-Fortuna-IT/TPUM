@@ -10,5 +10,7 @@
         public Task FetchItems();
         public Task FetchInventories();
         public Task FetchHeroes();
+
+        public Task CreateOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds);
     }
 }

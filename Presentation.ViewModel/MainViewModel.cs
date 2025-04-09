@@ -332,42 +332,44 @@ namespace Client.Presentation.ViewModel
             }
 
             Debug.WriteLine($"Attempting purchase for {buyer.Name}, Item {itemToBuy.Name}");
-            try
-            {
-                Guid orderId = Guid.NewGuid();
-                List<Guid> itemIds = new List<Guid> { itemToBuy.Id };
 
-                await Task.Run(() => _orderService.AddOrder(orderId, buyer.Id, itemIds));
-                await Task.Run(() => _orderService.TriggerPeriodicOrderProcessing());
-                Debug.WriteLine($"Order processing on.");
+            await _connectionService.CreateOrder(Guid.NewGuid(), buyer.Id, [itemToBuy.Id]);
+            //try
+            //{
+            //    Guid orderId = Guid.NewGuid();
+            //    List<Guid> itemIds = new List<Guid> { itemToBuy.Id };
 
-                Func<Task> refreshAction = async () =>
-                {
-                    await RefreshOrdersAsync();
-                    if (SelectedHero != null && SelectedHero.Id == buyer.Id)
-                    {
-                        await RefreshSelectedHeroDataAsync();
-                    }
-                };
+            //    await Task.Run(() => _orderService.AddOrder(orderId, buyer.Id, itemIds));
+            //    await Task.Run(() => _orderService.TriggerPeriodicOrderProcessing());
+            //    Debug.WriteLine($"Order processing on.");
 
-                if (_syncContext != null)
-                {
-                    _syncContext.Post(async _ => await refreshAction(), null);
-                }
-                else
-                {
-                    // Execute directly if no context
-                    await refreshAction();
-                }
+            //    Func<Task> refreshAction = async () =>
+            //    {
+            //        await RefreshOrdersAsync();
+            //        if (SelectedHero != null && SelectedHero.Id == buyer.Id)
+            //        {
+            //            await RefreshSelectedHeroDataAsync();
+            //        }
+            //    };
+
+            //    if (_syncContext != null)
+            //    {
+            //        _syncContext.Post(async _ => await refreshAction(), null);
+            //    }
+            //    else
+            //    {
+            //        // Execute directly if no context
+            //        await refreshAction();
+            //    }
 
 
-                await LoadShopItemsAsync();
-            }
-            catch (Exception ex)
-            {
-                LogError($"while buying item for Hero {buyer.Name}", ex);
-                // maybe a UI callback should be made to say to the user that purchase failed
-            }
+            //    await LoadShopItemsAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    LogError($"while buying item for Hero {buyer.Name}", ex);
+            //    // maybe a UI callback should be made to say to the user that purchase failed
+            //}
         }
 
         #endregion
