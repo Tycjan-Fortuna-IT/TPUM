@@ -1,8 +1,5 @@
 ﻿using ClientServer.Shared.Data.API;
 using ClientServer.Shared.Logic.API;
-using System.Runtime.CompilerServices;
-
-[assembly: InternalsVisibleTo("Client.Logic.Tests")]
 
 namespace Client.Logic.Implementation
 {

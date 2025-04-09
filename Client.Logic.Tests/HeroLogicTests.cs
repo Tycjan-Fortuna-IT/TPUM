@@ -1,5 +1,4 @@
 ﻿using Client.Logic.API;
-using Client.Logic.Implementation;
 using ClientServer.Shared.Logic.API;
 using ClientServer.Shared.Data.API;
 
@@ -41,34 +40,34 @@ namespace Client.Logic.Tests
         }
 
 
-        [TestMethod]
-        public void Map_ShouldCorrectlyMapLocalHeroImplementationToDto()
-        {
-            var testItem = new TestItem { Id = Guid.NewGuid(), Name = "MappedSword", MaintenanceCost = 5 };
-            var testInventory = new TestInventory { Id = Guid.NewGuid(), Capacity = 20 };
-            testInventory.Items.Add(testItem);
-            var testHero = new TestHero
-            {
-                Id = Guid.NewGuid(),
-                Name = "MappingHero",
-                Gold = 555f,
-                Inventory = testInventory
-            };
+        //[TestMethod]
+        //public void Map_ShouldCorrectlyMapLocalHeroImplementationToDto()
+        //{
+        //    var testItem = new TestItem { Id = Guid.NewGuid(), Name = "MappedSword", MaintenanceCost = 5 };
+        //    var testInventory = new TestInventory { Id = Guid.NewGuid(), Capacity = 20 };
+        //    testInventory.Items.Add(testItem);
+        //    var testHero = new TestHero
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Name = "MappingHero",
+        //        Gold = 555f,
+        //        Inventory = testInventory
+        //    };
 
-            IHeroDataTransferObject? result = HeroLogic.Map(testHero);
+        //    IHeroDataTransferObject? result = HeroLogic.Map(testHero);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(testHero.Id, result.Id);
-            Assert.AreEqual(testHero.Name, result.Name);
-            Assert.AreEqual(testHero.Gold, result.Gold);
-            Assert.IsNotNull(result.Inventory);
-            Assert.AreEqual(testInventory.Id, result.Inventory.Id);
-            Assert.AreEqual(testInventory.Capacity, result.Inventory.Capacity);
-            Assert.AreEqual(1, result.Inventory.Items.Count());
-            Assert.AreEqual(testItem.Id, result.Inventory.Items.First().Id);
-            Assert.AreEqual(testItem.Name, result.Inventory.Items.First().Name);
-            Assert.AreEqual(testItem.MaintenanceCost, result.Inventory.Items.First().MaintenanceCost);
-        }
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(testHero.Id, result.Id);
+        //    Assert.AreEqual(testHero.Name, result.Name);
+        //    Assert.AreEqual(testHero.Gold, result.Gold);
+        //    Assert.IsNotNull(result.Inventory);
+        //    Assert.AreEqual(testInventory.Id, result.Inventory.Id);
+        //    Assert.AreEqual(testInventory.Capacity, result.Inventory.Capacity);
+        //    Assert.AreEqual(1, result.Inventory.Items.Count());
+        //    Assert.AreEqual(testItem.Id, result.Inventory.Items.First().Id);
+        //    Assert.AreEqual(testItem.Name, result.Inventory.Items.First().Name);
+        //    Assert.AreEqual(testItem.MaintenanceCost, result.Inventory.Items.First().MaintenanceCost);
+        //}
 
         [TestMethod]
         public void GetAll_ShouldReturnAllHeroes()

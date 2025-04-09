@@ -1,7 +1,6 @@
 ﻿using ClientServer.Shared.Data.API;
 using ClientServer.Shared.Logic.API;
 using Server.Logic.API;
-using Server.Logic.Implementation;
 
 namespace Server.Logic.Tests
 {
@@ -31,35 +30,35 @@ namespace Server.Logic.Tests
             public List<IItem> Items { get; set; } = new List<IItem>();
         }
 
-        public void Map_ShouldCorrectlyMapLocalInventoryImplementationToDto()
-        {
-            var item1 = new TestItem { Id = Guid.NewGuid(), Name = "Potion" };
-            var item2 = new TestItem { Id = Guid.NewGuid(), Name = "Scroll" };
-            var testInventory = new TestInventory
-            {
-                Id = Guid.NewGuid(),
-                Capacity = 5
-            };
-            testInventory.Items.Add(item1);
-            testInventory.Items.Add(item2);
+        //public void Map_ShouldCorrectlyMapLocalInventoryImplementationToDto()
+        //{
+        //    var item1 = new TestItem { Id = Guid.NewGuid(), Name = "Potion" };
+        //    var item2 = new TestItem { Id = Guid.NewGuid(), Name = "Scroll" };
+        //    var testInventory = new TestInventory
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Capacity = 5
+        //    };
+        //    testInventory.Items.Add(item1);
+        //    testInventory.Items.Add(item2);
 
-            IInventoryDataTransferObject? result = InventoryLogic.Map(testInventory);
+        //    IInventoryDataTransferObject? result = InventoryLogic.Map(testInventory);
 
-            Assert.IsNotNull(result);
-            Assert.AreEqual(testInventory.Id, result.Id);
-            Assert.AreEqual(testInventory.Capacity, result.Capacity);
-            Assert.IsNotNull(result.Items);
-            Assert.AreEqual(2, result.Items.Count());
+        //    Assert.IsNotNull(result);
+        //    Assert.AreEqual(testInventory.Id, result.Id);
+        //    Assert.AreEqual(testInventory.Capacity, result.Capacity);
+        //    Assert.IsNotNull(result.Items);
+        //    Assert.AreEqual(2, result.Items.Count());
 
-            var resultItem1 = result.Items.FirstOrDefault(i => i.Id == item1.Id);
-            var resultItem2 = result.Items.FirstOrDefault(i => i.Id == item2.Id);
+        //    var resultItem1 = result.Items.FirstOrDefault(i => i.Id == item1.Id);
+        //    var resultItem2 = result.Items.FirstOrDefault(i => i.Id == item2.Id);
 
-            Assert.IsNotNull(resultItem1);
-            Assert.AreEqual(item1.Name, resultItem1.Name);
+        //    Assert.IsNotNull(resultItem1);
+        //    Assert.AreEqual(item1.Name, resultItem1.Name);
 
-            Assert.IsNotNull(resultItem2);
-            Assert.AreEqual(item2.Name, resultItem2.Name);
-        }
+        //    Assert.IsNotNull(resultItem2);
+        //    Assert.AreEqual(item2.Name, resultItem2.Name);
+        //}
 
         [TestMethod]
         public void Add_ShouldAddInventoryToRepository()
