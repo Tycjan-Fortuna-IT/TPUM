@@ -23,15 +23,6 @@ namespace Server.Data.Implementation
             Guid hero1Guid = Guid.NewGuid();
             _heroes.Add(hero1Guid, new Hero(hero1Guid, "Arthas the Fallen", 3000.0f, inv1));
 
-            Guid hero2Guid = Guid.NewGuid();
-            _heroes.Add(hero2Guid, new Hero(hero2Guid, "Lyra the Shadowblade", 2200.0f, new Inventory(20)));
-
-            Guid hero3Guid = Guid.NewGuid();
-            _heroes.Add(hero3Guid, new Hero(hero3Guid, "Gorrok the Unbreakable", 5000.0f, new Inventory(40)));
-
-            Guid hero4Guid = Guid.NewGuid();
-            _heroes.Add(hero4Guid, new Hero(hero4Guid, "Zyra the Flameborn", 2800.0f, new Inventory(25)));
-
             Guid item1Guid = Guid.NewGuid();
             _items.Add(item1Guid, new Item(item1Guid, "Magic Sword of Flames", 150, 35));
 

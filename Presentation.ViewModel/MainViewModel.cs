@@ -158,8 +158,24 @@ namespace Client.Presentation.ViewModel
             {
                 List<IHeroModel> heroes = await Task.Run(() => _heroService.GetAllHeroes().ToList());
                 UpdateObservableCollection(Heroes, heroes);
+
+                if (heroes.Any())
+                {
+                    Action selectFirstHero = () => SelectedHero = heroes[0];
+                    if (_syncContext != null)
+                    {
+                        _syncContext.Post(_ => selectFirstHero(), null);
+                    }
+                    else
+                    {
+                        selectFirstHero();
+                    }
+                }
             }
-            catch (Exception ex) { LogError("loading heroes", ex); }
+            catch (Exception ex)
+            {
+                LogError("loading heroes", ex);
+            }
         }
 
         private async Task LoadShopItemsAsync()
@@ -202,58 +218,6 @@ namespace Client.Presentation.ViewModel
                 updateAction();
             }
         }
-
-
-        // Refreshes Gold and Inventory
-        private async Task RefreshSelectedHeroDataAsync()
-        {
-            IHeroModel? currentHero = _selectedHero;
-            if (currentHero == null) return;
-
-            try
-            {
-                IHeroModel? updatedHeroData = await Task.Run(() => _heroService.GetHero(currentHero.Id));
-
-                // Prepare the UI update
-                Action updateAction = () =>
-                {
-                    if (_selectedHero == null || _selectedHero.Id != currentHero.Id)
-                    {
-                        return;
-                    }
-
-                    if (updatedHeroData != null)
-                    {
-                        SelectedHeroGold = updatedHeroData.Gold;
-                        SelectedHeroInventory.Clear();
-                        foreach (IItemModel item in updatedHeroData.Inventory.Items)
-                        {
-                            SelectedHeroInventory.Add(item);
-                        }
-                        Debug.WriteLine($"UI updated for {currentHero.Name}. New Gold: {SelectedHeroGold}");
-                    }
-                    else
-                    {
-                        SelectedHero = null;
-                    }
-                };
-
-                // Post the update to the UI
-                if (_syncContext != null)
-                {
-                    _syncContext.Post(_ => updateAction(), null);
-                }
-                else
-                {
-                    updateAction(); // Execute directly if no context
-                }
-            }
-            catch (Exception ex)
-            {
-                LogError($"While refreshing data for hero {currentHero.Name}", ex);
-            }
-        }
-
 
         private void UpdateSelectedHeroUIData()
         {
