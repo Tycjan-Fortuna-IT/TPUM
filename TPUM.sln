@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.12.35527.113
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Data.Tests", "Data.Tests\Server.Data.Tests.csproj", "{BD8F3729-8525-4C66-B0AE-1A051C4AA2D9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Data.Tests", "Server.Data.Tests\Server.Data.Tests.csproj", "{BD8F3729-8525-4C66-B0AE-1A051C4AA2D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Logic.Tests", "Logic.Tests\Server.Logic.Tests.csproj", "{A807067C-26F0-4433-AFC6-AFB959DF3331}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Logic.Tests", "Server.Logic.Tests\Server.Logic.Tests.csproj", "{A807067C-26F0-4433-AFC6-AFB959DF3331}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.Model", "Presentation.Model\Client.Presentation.Model.csproj", "{1EBB5403-656E-440D-B1F9-65727ACFF27F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.Model", "Client.Presentation.Model\Client.Presentation.Model.csproj", "{1EBB5403-656E-440D-B1F9-65727ACFF27F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.ViewModel", "Presentation.ViewModel\Client.Presentation.ViewModel.csproj", "{C5EDDF88-7648-427C-8646-A9579FC3FC3E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.ViewModel", "Client.Presentation.ViewModel\Client.Presentation.ViewModel.csproj", "{C5EDDF88-7648-427C-8646-A9579FC3FC3E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.View", "Presentation.View\Client.Presentation.View.csproj", "{9FB4C844-0F3F-47D2-BDB0-06301ED49333}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.View", "Client.Presentation.View\Client.Presentation.View.csproj", "{9FB4C844-0F3F-47D2-BDB0-06301ED49333}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.Model.Tests", "Presentation.Model.Tests\Client.Presentation.Model.Tests.csproj", "{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.Model.Tests", "Client.Presentation.Model.Tests\Client.Presentation.Model.Tests.csproj", "{75CE1576-EC9D-4545-A906-8CE3D3F6D1CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.ViewModel.Tests", "Presentation.ViewModel.Tests\Client.Presentation.ViewModel.Tests.csproj", "{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Presentation.ViewModel.Tests", "Client.Presentation.ViewModel.Tests\Client.Presentation.ViewModel.Tests.csproj", "{13CE1AAB-7247-4F78-B27F-D0D282BBBD14}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Data", "Client.Data\Client.Data.csproj", "{20D0322B-920A-46F7-9125-9E8BBB143A16}"
 EndProject

@@ -13,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Presentation.ViewModel\Client.Presentation.ViewModel.csproj" />
+    <ProjectReference Include="..\Client.Presentation.Model\Client.Presentation.Model.csproj" />
+    <ProjectReference Include="..\Client.Presentation.ViewModel\Client.Presentation.ViewModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
